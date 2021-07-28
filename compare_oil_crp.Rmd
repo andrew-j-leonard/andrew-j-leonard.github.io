@@ -1,0 +1,58 @@
+---
+title: "A Comparison of Conservation and Oil Prodution in the US"
+author: "Andrew Leonard"
+date: "7/23/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 
+
+First, I will start by loading the [CRP Enrollment and Rental Payments by State, 1986-2019](https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/Conservation/Excel/HistoryState86-19.xlsx) data.  I saved the data locally in case the URL should change in the future.
+```{r}
+fname <- here::here("Data", "HistoryState86-19.xlsx")
+DT <- openxlsx::read.xlsx(xlsxFile = fname, sheet = "ACRES", startRow = 4) 
+data.table::setDT(DT)
+head(DT)
+fracking_states <- c("TX", "ND", "SD", "CO", "MT", "NE", "NM", "WY", "PA", "WV", "OH", "NY", "LA", "OK", "AR")
+```
+
+Un-pivot the data.
+```{r}
+DT <- data.table::melt(DT, id.vars = "STATE", variable.name = "YEAR", value.name = "ACRES")
+head(DT, 3)
+tail(DT, 3)
+```
+Looks like we grabbed a blank row.  Let's filter it.
+```{r}
+state_names <- toupper(state.name)
+DT <- DT[STATE %in% state_names]
+unique(DT$STATE)
+```
+
+
+```{r}
+
+
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
