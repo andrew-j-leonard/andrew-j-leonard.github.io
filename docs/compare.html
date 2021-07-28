@@ -12,7 +12,7 @@
 <meta name="author" content="Andrew Leonard" />
 
 
-<title>Comparing Oil Production and Land Conservation in the US</title>
+<title>Compare Oil Production and Land Conservation in the US</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -291,6 +291,9 @@ $(document).ready(function () {
 <li>
   <a href="crp.html">CRP</a>
 </li>
+<li>
+  <a href="compare.html">Compare</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -303,7 +306,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Comparing Oil Production and Land Conservation in the US</h1>
+<h1 class="title toc-ignore">Compare Oil Production and Land Conservation in the US</h1>
 <h4 class="author">Andrew Leonard</h4>
 <h4 class="date">7/27/2021</h4>
 
@@ -312,22 +315,100 @@ $(document).ready(function () {
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<div id="this-document-will-provide-a-comparison-of-the-us-eias-production-data-and-the-usdas-crp-enrollment-data-using-r-markdown-and-tabeau.-please-refer-to-the-other-pages-in-this-site-in-order-to-learn-how-to-extract-clean-and-save-this-data-locally." class="section level3">
+<h3>This document will provide a comparison of the <a href="https://andrew-j-leonard.github.io/oil.html">US EIA’s Production data</a> and the <a href="https://andrew-j-leonard.github.io/crp.html">USDA’s CRP Enrollment data</a> using R Markdown and Tabeau. Please refer to the other pages in this site in order to learn how to extract, clean, and save this data locally.</h3>
+<p>I began my career working in the ag commodities market in 2015. At the time, the <a href="https://blogs.worldbank.org/developmenttalk/what-triggered-oil-price-plunge-2014-2016-and-why-it-failed-deliver-economic-impetus-eight-charts#:~:text=The%20initial%20drop%20in%20oil,concerns%2C%20and%20shifting%20OPEC%20policies.&amp;text=This%20partly%20explains%20why%20the,subsequent%20boost%20to%20global%20activity.">price of oil was plunging</a> due to the increase in US shale oil production - obviously this had an <a href="https://www.investopedia.com/ask/answers/030415/how-does-price-oil-affect-stock-market.asp">impact on the price of agricultural commodities</a> as well.</p>
+<p>The practice used in shale oil production is known as <a href="https://www.usgs.gov/faqs/what-hydraulic-fracturing?qt-news_science_products=0#">hydraulic fracturing</a> AKA “fracking” which has been around since the late 1980’s. Fracking can be a controversial subject because of its <a href="https://www.usgs.gov/faqs/what-environmental-issues-are-associated-hydraulic-fracturing?qt-news_science_products=0#qt-news_science_products">effects on the environment</a> so I was curious what other facets of agriculture could be affected by shale oil production.</p>
+<p>Let’s begin the analysis by loading the necessary packages in R.</p>
+<pre class="r"><code>library(&quot;data.table&quot;)
+library(&quot;htmltools&quot;)
+library(&quot;ggplot2&quot;)
+suppressMessages(library(&quot;here&quot;))</code></pre>
+<p>Load the <a href="https://andrew-j-leonard.github.io/crp.html">CRP data</a> saved in the CSV file and view it.</p>
+<pre class="r"><code>crp_fname &lt;- here(&quot;Data&quot;, &quot;usda_crp_enrollment.csv&quot;)
+crp_dt &lt;- fread(crp_fname)
+head(crp_dt)</code></pre>
+<pre><code>##         state year    acres
+## 1:    ALABAMA 1986  68508.7
+## 2:     ALASKA 1986   2312.0
+## 3:    ARIZONA 1986      0.0
+## 4:   ARKANSAS 1986  19999.2
+## 5: CALIFORNIA 1986  21953.4
+## 6:   COLORADO 1986 354707.6</code></pre>
+<p>Let’s rank states by the quantity of acres enrolled for the most recent date.</p>
+<pre class="r"><code># Start by creating a column for the max year by state.
+crp_dt[, max_year := max(year), by = state]
+# Then filter where year is equal to max year.
+max_crp_dt &lt;- crp_dt[year == max_year]
+# now order the data by acres (descending)
+setorder(max_crp_dt, -acres)
+# create a number for each row
+max_crp_dt[, rank := .I]
+# check top 10 rows
+head(max_crp_dt, 10)</code></pre>
+<pre><code>##            state year   acres max_year rank
+##  1:        TEXAS 2019 2811584     2019    1
+##  2:       KANSAS 2019 1940899     2019    2
+##  3:     COLORADO 2019 1838914     2019    3
+##  4:         IOWA 2019 1745860     2019    4
+##  5: NORTH DAKOTA 2019 1295115     2019    5
+##  6:   WASHINGTON 2019 1191687     2019    6
+##  7: SOUTH DAKOTA 2019 1142968     2019    7
+##  8:     NEBRASKA 2019 1064143     2019    8
+##  9:      MONTANA 2019 1059941     2019    9
+## 10:    MINNESOTA 2019 1058581     2019   10</code></pre>
+<p>I created a dashboard in <a href="https://public.tableau.com/views/AcresEnrolledinCRP/dashAllStates?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link">Tableau Public</a> which you can interact with below: <div class='tableauPlaceholder' id='viz1627505208034' style='position: relative'><noscript><a href='#'><img alt='dashAllStates ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ac&#47;AcresEnrolledinCRP&#47;dashAllStates&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='AcresEnrolledinCRP&#47;dashAllStates' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ac&#47;AcresEnrolledinCRP&#47;dashAllStates&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1627505208034');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.minWidth='420px';vizElement.style.maxWidth='650px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.minWidth='420px';vizElement.style.maxWidth='650px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.height='777px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script></p>
+<p>Now let’s load our <a href="https://andrew-j-leonard.github.io/oil.html">oil production data</a> and view it.</p>
+<pre class="r"><code>oil_fname &lt;- here(&quot;Data&quot;, &quot;eia_oil_production.csv&quot;)
+oil_dt &lt;- fread(oil_fname)
+head(oil_dt)</code></pre>
+<pre><code>##    state_abb  state year       date barrel barrels_per_day
+## 1:        AK ALASKA 1981 1981-01-01  48427        1562.161
+## 2:        AK ALASKA 1981 1981-01-01  49789        1606.097
+## 3:        AK ALASKA 1981 1981-02-01  50307        1796.679
+## 4:        AK ALASKA 1981 1981-02-01  45346        1619.500
+## 5:        AK ALASKA 1981 1981-03-01  50150        1617.742
+## 6:        AK ALASKA 1981 1981-04-01  48235        1607.833</code></pre>
+<p>The oil data is aggregated by month by default so we need to aggregate it by year in order to join the data with our CRP data later.</p>
+<pre class="r"><code>oil_dt &lt;- oil_dt[, .(sum_barrel = sum(barrel), avg_barrels_per_day = mean(barrels_per_day)), by = .(state_abb, state, year)]
+head(oil_dt)</code></pre>
+<pre><code>##    state_abb  state year sum_barrel avg_barrels_per_day
+## 1:        AK ALASKA 1981     587337            1619.443
+## 2:        AK ALASKA 1982     618910            1706.124
+## 3:        AK ALASKA 1983     625527            1724.483
+## 4:        AK ALASKA 1984     630401            1727.862
+## 5:        AK ALASKA 1985     666233            1837.463
+## 6:        AK ALASKA 1986     681310            1877.791</code></pre>
+<p>The states we’re primarily interested in are TX, ND, SD, CO, MT, NE, NM, WY, PA, WV, OH, NY, LA, OK, and AR. <img src="Img/page1-1650px-United_States_Shale_gas_plays,_May_2011.pdf.jpg" alt="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/United_States_Shale_gas_plays%2C_May_2011.pdf/page1-1650px-United_States_Shale_gas_plays%2C_May_2011.pdf.jpg" /> <img src="Img/202101_monthly_dry_shale.png" alt="https://www.eia.gov/naturalgas/weekly/archivenew_ngwu/2021/02_18/img/202101_monthly_dry_shale.png" /></p>
+<p>So let’s go ahead and filter our oil data for only these states.</p>
+<pre class="r"><code>fracking_states &lt;- c(&quot;TX&quot;, &quot;ND&quot;, &quot;SD&quot;, &quot;CO&quot;, &quot;MT&quot;, &quot;NE&quot;, &quot;NM&quot;, &quot;WY&quot;, &quot;PA&quot;, &quot;WV&quot;, &quot;OH&quot;, &quot;NY&quot;, &quot;LA&quot;, &quot;OK&quot;, &quot;AR&quot;)
+oil_dt &lt;- oil_dt[state_abb %in% fracking_states]</code></pre>
+<p>I created another dashboard for only these states in <a href="https://public.tableau.com/views/AcresEnrolledinCRP/dashFrackingStates?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link">Tableau Public</a> which you can interact with below:</p>
+<pre class="r"><code>html_fname &lt;- here(&quot;crp_fracking_states.html&quot;)
+includeHTML(html_fname)</code></pre>
+<div class='tableauPlaceholder' id='viz1627503726534' style='position: relative'><noscript><a href='#'><img alt='dashFrackingStates ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ac&#47;AcresEnrolledinCRP&#47;dashFrackingStates&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='AcresEnrolledinCRP&#47;dashFrackingStates' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ac&#47;AcresEnrolledinCRP&#47;dashFrackingStates&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1627503726534');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.minWidth='420px';vizElement.style.maxWidth='650px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.minWidth='420px';vizElement.style.maxWidth='650px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.height='877px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+<pre class="r"><code>rm(html_fname)</code></pre>
+<p>Now join the CRP and Oil Production data and compare.</p>
+<pre class="r"><code>DT &lt;- merge(oil_dt, crp_dt, by = c(&quot;state&quot;, &quot;year&quot;))
+DT &lt;- DT[, .(avg_barrels_per_day = mean(avg_barrels_per_day), 
+             acres = sum(acres)), 
+         by = year]
+ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) + 
+  geom_point() + 
+  stat_summary(fun.data = mean_cl_normal) + 
+  geom_smooth(method = &quot;lm&quot;, formula = y~x)</code></pre>
+<pre><code>## Warning: Removed 34 rows containing missing values (geom_segment).</code></pre>
+<p><img src="compare_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>We can see there are a couple of outliers. Since fracking didn’t start until the 1980’s, let’s filter out dates before 1990 and plot it again.</p>
+<pre class="r"><code>DT &lt;- DT[year &gt;= 1990]
+ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) + 
+  geom_point() + 
+  stat_summary(fun.data = mean_cl_normal) + 
+  geom_smooth(method = &quot;lm&quot;, formula = y~x)</code></pre>
+<pre><code>## Warning: Removed 30 rows containing missing values (geom_segment).</code></pre>
+<p><img src="compare_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Much better! I hope this was useful and please feel free to contact me with any questions or concerns.</p>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="compare_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
 </div>
 
 

@@ -11,11 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Overview
 
-### This R Markdown document will provide an example of how to access data for the [USDA's Conservation Reserve Program (CRP)](https://www.fsa.usda.gov/programs-and-services/conservation-programs/conservation-reserve-program/).  In this example, I will read an Excel document located on the USDA's website containing data for [CRP Enrollment and Rental Payments by State, 1986-2019](https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/Conservation/Excel/HistoryState86-19.xlsx).  Then I will clean this data and save it locally to a CSV.
+### This R Markdown document will provide an example of how to access data for the [USDA's Conservation Reserve Program (CRP)](https://www.fsa.usda.gov/programs-and-services/conservation-programs/conservation-reserve-program/).  In this example, I will read an Excel document located on the USDA's website containing data for [CRP Enrollment and Rental Payments by State, 1986-2019](https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/Conservation/Excel/HistoryState86-19.xlsx).  
 
 Note, if a variable name begins with a `.` this is simply to avoid conflicting names with [R keywords](https://rdrr.io/r/base/Reserved.html) or other variables.
 
-### Read
+### Read the data.
 
 Let's start by loading the necessary packages
 ```{r}
@@ -37,7 +37,7 @@ View the top 6 rows of the table.
 head(DT)
 ```
 
-### Clean 
+### Clean the data.
 
 Un-pivot the data in order to make it easier to work with.
 ```{r}
@@ -76,6 +76,10 @@ ggplot(dt, aes(x = as.character(year), y = total_acres)) +
   theme(axis.text.x = element_text(angle = 45)) + 
   labs(y = "Total Acres", x = "Year")
 ```
+
+
+
+### Save the data.
 
 Save the results.
 ```{r}

@@ -9,3 +9,6 @@ navbar:
       href: oil.html
     - text: "CRP"
       href: crp.html
+    - text: "Compare"
+      href: compare.html
+theme:  cosmo

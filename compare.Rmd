@@ -1,5 +1,5 @@
 ---
-title: "Comparing Oil Production and Land Conservation in the US"
+title: "Compare Oil Production and Land Conservation in the US"
 author: "Andrew Leonard"
 date: "7/27/2021"
 output: html_document
@@ -11,20 +11,98 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Overview
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### This document will provide a comparison of the [US EIA's Production data](https://andrew-j-leonard.github.io/oil.html) and the [USDA's CRP Enrollment data](https://andrew-j-leonard.github.io/crp.html) using R Markdown and Tabeau. Please refer to the other pages in this site in order to learn how to extract, clean, and save this data locally.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+I began my career working in the ag commodities market in 2015.  At the time, the [price of oil was plunging](https://blogs.worldbank.org/developmenttalk/what-triggered-oil-price-plunge-2014-2016-and-why-it-failed-deliver-economic-impetus-eight-charts#:~:text=The%20initial%20drop%20in%20oil,concerns%2C%20and%20shifting%20OPEC%20policies.&text=This%20partly%20explains%20why%20the,subsequent%20boost%20to%20global%20activity.) due to the increase in US shale oil production - obviously this had an [impact on the price of agricultural commodities](https://www.investopedia.com/ask/answers/030415/how-does-price-oil-affect-stock-market.asp) as well. 
 
-```{r cars}
-summary(cars)
+The practice used in shale oil production is known as [hydraulic fracturing](https://www.usgs.gov/faqs/what-hydraulic-fracturing?qt-news_science_products=0#) AKA "fracking" which has been around since the late 1980's.  Fracking can be a controversial subject because of its [effects on the environment](https://www.usgs.gov/faqs/what-environmental-issues-are-associated-hydraulic-fracturing?qt-news_science_products=0#qt-news_science_products) so I was curious what other facets of agriculture could be affected by shale oil production.
+
+
+Let's begin the analysis by loading the necessary packages in R.
+```{r}
+library("data.table")
+library("htmltools")
+library("ggplot2")
+suppressMessages(library("here"))
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+Load the [CRP data](https://andrew-j-leonard.github.io/crp.html) saved in the CSV file and view it.
+```{r}
+crp_fname <- here("Data", "usda_crp_enrollment.csv")
+crp_dt <- fread(crp_fname)
+head(crp_dt)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Let's rank states by the quantity of acres enrolled for the most recent date.  
+```{r}
+# Start by creating a column for the max year by state.
+crp_dt[, max_year := max(year), by = state]
+# Then filter where year is equal to max year.
+max_crp_dt <- crp_dt[year == max_year]
+# now order the data by acres (descending)
+setorder(max_crp_dt, -acres)
+# create a number for each row
+max_crp_dt[, rank := .I]
+# check top 10 rows
+head(max_crp_dt, 10)
+```
+
+I created a dashboard in [Tableau Public](https://public.tableau.com/views/AcresEnrolledinCRP/dashAllStates?:language=en-US&:display_count=n&:origin=viz_share_link) which you can interact with below:
+```{r echo = FALSE}
+html_fname <- here("crp_all_states.html")
+includeHTML(html_fname)
+rm(html_fname)
+```
+
+Now let's load our [oil production data](https://andrew-j-leonard.github.io/oil.html) and view it.
+```{r}
+oil_fname <- here("Data", "eia_oil_production.csv")
+oil_dt <- fread(oil_fname)
+head(oil_dt)
+```
+
+The oil data is aggregated by month by default so we need to aggregate it by year in order to join the data with our CRP data later.
+```{r}
+oil_dt <- oil_dt[, .(sum_barrel = sum(barrel), avg_barrels_per_day = mean(barrels_per_day)), by = .(state_abb, state, year)]
+head(oil_dt)
+```
+
+The states we're primarily interested in are TX, ND, SD, CO, MT, NE, NM, WY, PA, WV, OH, NY, LA, OK, and AR.
+![https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/United_States_Shale_gas_plays%2C_May_2011.pdf/page1-1650px-United_States_Shale_gas_plays%2C_May_2011.pdf.jpg](Img/page1-1650px-United_States_Shale_gas_plays,_May_2011.pdf.jpg)
+![https://www.eia.gov/naturalgas/weekly/archivenew_ngwu/2021/02_18/img/202101_monthly_dry_shale.png](Img/202101_monthly_dry_shale.png)
+
+So let's go ahead and filter our oil data for only these states.
+```{r}
+fracking_states <- c("TX", "ND", "SD", "CO", "MT", "NE", "NM", "WY", "PA", "WV", "OH", "NY", "LA", "OK", "AR")
+oil_dt <- oil_dt[state_abb %in% fracking_states]
+```
+
+I created another dashboard for only these states in [Tableau Public](https://public.tableau.com/views/AcresEnrolledinCRP/dashFrackingStates?:language=en-US&:display_count=n&:origin=viz_share_link) which you can interact with below:
+```{r}
+html_fname <- here("crp_fracking_states.html")
+includeHTML(html_fname)
+rm(html_fname)
+```
+
+Now join the CRP and Oil Production data and compare.
+```{r}
+DT <- merge(oil_dt, crp_dt, by = c("state", "year"))
+DT <- DT[, .(avg_barrels_per_day = mean(avg_barrels_per_day), 
+             acres = sum(acres)), 
+         by = year]
+ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) + 
+  geom_point() + 
+  stat_summary(fun.data = mean_cl_normal) + 
+  geom_smooth(method = "lm", formula = y~x)
+```
+
+We can see there are a couple of outliers.  Since fracking didn't start until the 1980's, let's filter out dates before 1990 and plot it again.
+```{r}
+DT <- DT[year >= 1990]
+ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) + 
+  geom_point() + 
+  stat_summary(fun.data = mean_cl_normal) + 
+  geom_smooth(method = "lm", formula = y~x)
+```
+
+Much better!  I hope this was useful and please feel free to contact me with any questions or concerns.

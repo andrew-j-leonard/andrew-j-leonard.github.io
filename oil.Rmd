@@ -194,7 +194,7 @@ View a summary of the statistics of the entire data set.
 ```{r}
 summary(DT)
 ```
-Note that the Min. date is 1981-01-01 and the MAx. date is 2021-04-01.  This means if we ever want to look at annual production, the 2021 numbers will be much lower than all other years.  For example.  
+Note that the Min. date is 1981-01-01 and the Max. date is 2021-04-01.  This means if we ever want to look at annual production, the 2021 numbers will be much lower than all other years.  For example.  
 ```{r}
 dt <- DT[, .(total_barrels = sum(barrel)), by = .(year)]
 ggplot(dt, aes(x = year, y = total_barrels)) + 

@@ -1,7 +1,16 @@
 ---
-title: "My Website"
+title: "Welcome to my site!"
+author: "Andrew Leonard"
+date: "7/28/2021"
+output: html_document
 ---
 
-Hello!
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-Welcome to my website!
+## This page is under construction - please check out the other pages using the navbar at the top.  
+
+### You may also download a copy of my resume:
+
+![Andrew Leonard Resume](Img/Resume - Andrew Leonard.pdf){width=85% height=600}

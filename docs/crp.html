@@ -291,6 +291,9 @@ $(document).ready(function () {
 <li>
   <a href="crp.html">CRP</a>
 </li>
+<li>
+  <a href="compare.html">Compare</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -312,12 +315,12 @@ $(document).ready(function () {
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<div id="this-r-markdown-document-will-provide-an-example-of-how-to-access-data-for-the-usdas-conservation-reserve-program-crp.-in-this-example-i-will-read-an-excel-document-located-on-the-usdas-website-containing-data-for-crp-enrollment-and-rental-payments-by-state-1986-2019.-then-i-will-clean-this-data-and-save-it-locally-to-a-csv." class="section level3">
-<h3>This R Markdown document will provide an example of how to access data for the <a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/conservation-reserve-program/">USDA’s Conservation Reserve Program (CRP)</a>. In this example, I will read an Excel document located on the USDA’s website containing data for <a href="https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/Conservation/Excel/HistoryState86-19.xlsx">CRP Enrollment and Rental Payments by State, 1986-2019</a>. Then I will clean this data and save it locally to a CSV.</h3>
+<div id="this-r-markdown-document-will-provide-an-example-of-how-to-access-data-for-the-usdas-conservation-reserve-program-crp.-in-this-example-i-will-read-an-excel-document-located-on-the-usdas-website-containing-data-for-crp-enrollment-and-rental-payments-by-state-1986-2019." class="section level3">
+<h3>This R Markdown document will provide an example of how to access data for the <a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/conservation-reserve-program/">USDA’s Conservation Reserve Program (CRP)</a>. In this example, I will read an Excel document located on the USDA’s website containing data for <a href="https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/Conservation/Excel/HistoryState86-19.xlsx">CRP Enrollment and Rental Payments by State, 1986-2019</a>.</h3>
 <p>Note, if a variable name begins with a <code>.</code> this is simply to avoid conflicting names with <a href="https://rdrr.io/r/base/Reserved.html">R keywords</a> or other variables.</p>
 </div>
-<div id="read" class="section level3">
-<h3>Read</h3>
+<div id="read-the-data." class="section level3">
+<h3>Read the data.</h3>
 <p>Let’s start by loading the necessary packages</p>
 <pre class="r"><code>library(&quot;openxlsx&quot;)
 library(&quot;data.table&quot;)
@@ -365,8 +368,8 @@ setDT(DT)</code></pre>
 ## 5:   87660.0   83113.7   81456.2   79611.04   74336.77   42788.19   42735.31
 ## 6: 2067070.1 1988096.2 1912358.4 1853457.21 1779117.03 1813765.63 1838914.49</code></pre>
 </div>
-<div id="clean" class="section level3">
-<h3>Clean</h3>
+<div id="clean-the-data." class="section level3">
+<h3>Clean the data.</h3>
 <p>Un-pivot the data in order to make it easier to work with.</p>
 <pre class="r"><code>DT &lt;- data.table::melt(DT, id.vars = &quot;STATE&quot;, variable.name = &quot;YEAR&quot;, value.name = &quot;ACRES&quot;)</code></pre>
 <p>View the top 3 rows of the table.</p>
@@ -413,8 +416,11 @@ ggplot(dt, aes(x = as.character(year), y = total_acres)) +
   theme(axis.text.x = element_text(angle = 45)) + 
   labs(y = &quot;Total Acres&quot;, x = &quot;Year&quot;)</code></pre>
 <p><img src="crp_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="save-the-data." class="section level3">
+<h3>Save the data.</h3>
 <p>Save the results.</p>
-<pre class="r"><code>csv_fname &lt;- here(&quot;Data&quot;, &quot;usda_crp_enrollment&quot;)
+<pre class="r"><code>csv_fname &lt;- here(&quot;Data&quot;, &quot;usda_crp_enrollment.csv&quot;)
 fwrite(DT, csv_fname)</code></pre>
 <p>And that’s it! I hope this was helpful. Please feel free to reach out with any questions or concerns.</p>
 </div>
