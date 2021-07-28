@@ -79,7 +79,7 @@ ggplot(dt, aes(x = as.character(year), y = total_acres)) +
 
 Save the results.
 ```{r}
-csv_fname <- here("Data", "usda_crp_enrollment")
+csv_fname <- here("Data", "usda_crp_enrollment.csv")
 fwrite(DT, csv_fname)
 ```
 
