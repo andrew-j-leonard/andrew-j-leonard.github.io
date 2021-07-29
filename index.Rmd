@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## This page is under construction - please check out the other pages using the navbar at the top.  
+## Please check out the other pages using the navbar at the top.  
 
 
 ### You may also download a copy of my resume:

@@ -60,6 +60,7 @@ I created a dashboard in [Tableau Public](https://public.tableau.com/views/Acres
 read_html("crp_all_states.html")
 ```
 
+
 ## Oil Data
 
 Now let's load our [oil production data](https://andrew-j-leonard.github.io/oil.html) and view it.
