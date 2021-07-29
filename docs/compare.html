@@ -379,7 +379,7 @@ head(oil_dt)</code></pre>
 ## 4:        AK ALASKA 1984     630401            1727.862
 ## 5:        AK ALASKA 1985     666233            1837.463
 ## 6:        AK ALASKA 1986     681310            1877.791</code></pre>
-<p>The states we’re primarily interested in are TX, ND, SD, CO, MT, NE, NM, WY, PA, WV, OH, NY, LA, OK, and AR. <img src="Img/page1-1650px-United_States_Shale_gas_plays,_May_2011.pdf.jpg" alt="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/United_States_Shale_gas_plays%2C_May_2011.pdf/page1-1650px-United_States_Shale_gas_plays%2C_May_2011.pdf.jpg" /> <img src="Img/202101_monthly_dry_shale.png" alt="https://www.eia.gov/naturalgas/weekly/archivenew_ngwu/2021/02_18/img/202101_monthly_dry_shale.png" /></p>
+<p>The states we’re primarily interested in are TX, ND, SD, CO, MT, NE, NM, WY, PA, WV, OH, NY, LA, OK, and AR. <a href="Img/page1-1650px-United_States_Shale_gas_plays,_May_2011.pdf.jpg">https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/United_States_Shale_gas_plays%2C_May_2011.pdf/page1-1650px-United_States_Shale_gas_plays%2C_May_2011.pdf.jpg</a> <a href="Img/202101_monthly_dry_shale.png">https://www.eia.gov/naturalgas/weekly/archivenew_ngwu/2021/02_18/img/202101_monthly_dry_shale.png</a></p>
 <p>So let’s go ahead and filter our oil data for only these states.</p>
 <pre class="r"><code>fracking_states &lt;- c(&quot;TX&quot;, &quot;ND&quot;, &quot;SD&quot;, &quot;CO&quot;, &quot;MT&quot;, &quot;NE&quot;, &quot;NM&quot;, &quot;WY&quot;, &quot;PA&quot;, &quot;WV&quot;, &quot;OH&quot;, &quot;NY&quot;, &quot;LA&quot;, &quot;OK&quot;, &quot;AR&quot;)
 oil_dt &lt;- oil_dt[state_abb %in% fracking_states]</code></pre>
