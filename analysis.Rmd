@@ -1,5 +1,5 @@
 ---
-title: "Compare Oil Production and Land Conservation in the US"
+title: "Oil Production and Land Conservation in the US"
 author: "Andrew Leonard"
 date: "7/27/2021"
 output: html_document

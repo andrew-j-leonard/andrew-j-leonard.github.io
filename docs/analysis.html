@@ -12,7 +12,7 @@
 <meta name="author" content="Andrew Leonard" />
 
 
-<title>Compare Oil Production and Land Conservation in the US</title>
+<title>Oil Production and Land Conservation in the US</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -292,7 +292,7 @@ $(document).ready(function () {
   <a href="crp.html">CRP</a>
 </li>
 <li>
-  <a href="compare.html">Compare</a>
+  <a href="analysis.html">Analysis</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -306,7 +306,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Compare Oil Production and Land Conservation in the US</h1>
+<h1 class="title toc-ignore">Oil Production and Land Conservation in the US</h1>
 <h4 class="author">Andrew Leonard</h4>
 <h4 class="date">7/27/2021</h4>
 
@@ -398,7 +398,7 @@ ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) +
   stat_summary(fun.data = mean_cl_normal) + 
   geom_smooth(method = &quot;lm&quot;, formula = y~x)</code></pre>
 <pre><code>## Warning: Removed 34 rows containing missing values (geom_segment).</code></pre>
-<p><img src="compare_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="analysis_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>We can see there are a couple of outliers. Since fracking didn’t start until the 1980’s, let’s filter out dates before 1990 and plot it again.</p>
 <pre class="r"><code>DT &lt;- DT[year &gt;= 1990]
 ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) + 
@@ -406,7 +406,7 @@ ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) +
   stat_summary(fun.data = mean_cl_normal) + 
   geom_smooth(method = &quot;lm&quot;, formula = y~x)</code></pre>
 <pre><code>## Warning: Removed 30 rows containing missing values (geom_segment).</code></pre>
-<p><img src="compare_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Much better! I hope this was useful and please feel free to contact me with any questions or concerns.</p>
 </div>
 </div>
