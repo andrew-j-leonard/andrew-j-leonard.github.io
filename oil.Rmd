@@ -165,8 +165,9 @@ DT[, state := state_abb_to_name(state_abb), by = .(state_abb)]
 Convert `barrel` column from character to numeric and the `date` column to date and create a `year` column using the `date` column.
 ```{r}
 DT[, `:=` (barrel = as.numeric(barrel), 
-           date = anydate(date))]
-DT[, year := year(date)] # avoid calling anydate twice
+           date = paste0(date, "01"))]
+DT[, date := as.Date(date, "%Y%m%d")]
+DT[, year := year(date)]
 ```
 
 Check the data types once again to make sure everything is squared away.

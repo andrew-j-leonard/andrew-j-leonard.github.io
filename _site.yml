@@ -3,11 +3,11 @@ output_dir: "docs"
 navbar:
   title: "Andrew Leonard's Site"
   left:
-    - text: "Home"
+    - text: "Resume"
       href: index.html
-    - text: "Oil"
+    - text: "Oil Data"
       href: oil.html
-    - text: "CRP"
+    - text: "Conservation Data"
       href: crp.html
-    - text: "Analysis"
+    - text: "Comparative Analysis"
       href: analysis.html

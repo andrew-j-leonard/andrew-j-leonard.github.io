@@ -283,16 +283,16 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
+  <a href="index.html">Resume</a>
 </li>
 <li>
-  <a href="oil.html">Oil</a>
+  <a href="oil.html">Oil Data</a>
 </li>
 <li>
-  <a href="crp.html">CRP</a>
+  <a href="crp.html">Conservation Data</a>
 </li>
 <li>
-  <a href="analysis.html">Analysis</a>
+  <a href="analysis.html">Comparative Analysis</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -449,8 +449,9 @@ print(length(results))</code></pre>
 DT[, state := state_abb_to_name(state_abb), by = .(state_abb)]</code></pre>
 <p>Convert <code>barrel</code> column from character to numeric and the <code>date</code> column to date and create a <code>year</code> column using the <code>date</code> column.</p>
 <pre class="r"><code>DT[, `:=` (barrel = as.numeric(barrel), 
-           date = anydate(date))]
-DT[, year := year(date)] # avoid calling anydate twice</code></pre>
+           date = paste0(date, &quot;01&quot;))]
+DT[, date := as.Date(date, &quot;%Y%m%d&quot;)]
+DT[, year := year(date)]</code></pre>
 <p>Check the data types once again to make sure everything is squared away.</p>
 <pre class="r"><code>str(DT)</code></pre>
 <pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14520 obs. of  5 variables:
@@ -466,17 +467,17 @@ setkey(DT, state_abb, date)</code></pre>
 <p>View the top 6 rows of the data.</p>
 <pre class="r"><code>head(DT)</code></pre>
 <pre><code>##    state_abb  state year       date barrel
-## 1:        AK ALASKA 1981 1981-01-01  48427
-## 2:        AK ALASKA 1981 1981-01-01  49789
-## 3:        AK ALASKA 1981 1981-02-01  50307
-## 4:        AK ALASKA 1981 1981-02-01  45346
-## 5:        AK ALASKA 1981 1981-03-01  50150
-## 6:        AK ALASKA 1981 1981-04-01  48235</code></pre>
+## 1:        AK ALASKA 1981 1981-01-01  49789
+## 2:        AK ALASKA 1981 1981-02-01  45346
+## 3:        AK ALASKA 1981 1981-03-01  50150
+## 4:        AK ALASKA 1981 1981-04-01  48235
+## 5:        AK ALASKA 1981 1981-05-01  48977
+## 6:        AK ALASKA 1981 1981-06-01  48967</code></pre>
 <p>View the bottom 6 rows of the data.</p>
 <pre class="r"><code>tail(DT)</code></pre>
 <pre><code>##    state_abb   state year       date barrel
-## 1:        WY WYOMING 2020 2020-09-01   7404
-## 2:        WY WYOMING 2020 2020-10-01   7386
+## 1:        WY WYOMING 2020 2020-11-01   7078
+## 2:        WY WYOMING 2020 2020-12-01   7292
 ## 3:        WY WYOMING 2021 2021-01-01   7310
 ## 4:        WY WYOMING 2021 2021-02-01   6147
 ## 5:        WY WYOMING 2021 2021-03-01   6946
@@ -485,10 +486,10 @@ setkey(DT, state_abb, date)</code></pre>
 <pre class="r"><code>summary(DT)</code></pre>
 <pre><code>##   state_abb            state                year           date           
 ##  Length:14520       Length:14520       Min.   :1981   Min.   :1981-01-01  
-##  Class :character   Class :character   1st Qu.:1991   1st Qu.:1991-01-01  
-##  Mode  :character   Mode  :character   Median :2001   Median :2001-01-16  
-##                                        Mean   :2001   Mean   :2000-12-26  
-##                                        3rd Qu.:2011   3rd Qu.:2011-02-01  
+##  Class :character   Class :character   1st Qu.:1991   1st Qu.:1991-01-24  
+##  Mode  :character   Mode  :character   Median :2001   Median :2001-02-15  
+##                                        Mean   :2001   Mean   :2001-02-14  
+##                                        3rd Qu.:2011   3rd Qu.:2011-03-08  
 ##                                        Max.   :2021   Max.   :2021-04-01  
 ##      barrel      
 ##  Min.   :     0  
@@ -512,12 +513,12 @@ ggplot(dt, aes(x = year, y = total_barrels)) +
 DT[, num_days_in_month := calc_eomonth_day(date)]
 head(DT)</code></pre>
 <pre><code>##    state_abb  state year       date barrel num_days_in_month
-## 1:        AK ALASKA 1981 1981-01-01  48427                31
-## 2:        AK ALASKA 1981 1981-01-01  49789                31
-## 3:        AK ALASKA 1981 1981-02-01  50307                28
-## 4:        AK ALASKA 1981 1981-02-01  45346                28
-## 5:        AK ALASKA 1981 1981-03-01  50150                31
-## 6:        AK ALASKA 1981 1981-04-01  48235                30</code></pre>
+## 1:        AK ALASKA 1981 1981-01-01  49789                31
+## 2:        AK ALASKA 1981 1981-02-01  45346                28
+## 3:        AK ALASKA 1981 1981-03-01  50150                31
+## 4:        AK ALASKA 1981 1981-04-01  48235                30
+## 5:        AK ALASKA 1981 1981-05-01  48977                31
+## 6:        AK ALASKA 1981 1981-06-01  48967                30</code></pre>
 <p>Then divide the barrel production by the total number of days in each month.</p>
 <pre class="r"><code>DT[, barrels_per_day := barrel / num_days_in_month]
  # drop the num_days_in_month columns
