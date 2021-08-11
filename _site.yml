@@ -1,7 +1,7 @@
 name: "ajl-site"
 output_dir: "docs"
 navbar:
-  title: "Andrew Leonard's Site"
+  title: "Andrew Leonard's Portfolio"
   left:
     - text: "Resume"
       href: index.html
