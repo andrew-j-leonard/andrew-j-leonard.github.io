@@ -11,5 +11,5 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Please check out the other pages using the navbar at the top.  
 
-### You may also [download](Img/Resume - Andrew Leonard.pdf) a copy of my resume:
+### You may also <b>[download](Img/Resume - Andrew Leonard.pdf)</b> a copy of my resume:
 ![Andrew Leonard Resume](Img/Resume - Andrew Leonard.png)
