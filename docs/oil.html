@@ -16,10 +16,19 @@
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -34,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -51,32 +55,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
 
@@ -87,10 +65,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -107,40 +81,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -168,7 +115,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -180,7 +127,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -191,10 +138,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -206,7 +166,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -278,21 +237,30 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Andrew Leonard's Site</a>
+      <a class="navbar-brand" href="index.html">Andrew Leonard's Portfolio</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
   <a href="index.html">Resume</a>
 </li>
-<li>
-  <a href="oil.html">Oil Data</a>
-</li>
-<li>
-  <a href="crp.html">Conservation Data</a>
-</li>
-<li>
-  <a href="analysis.html">Comparative Analysis</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="oil.html">Oil Data</a>
+    </li>
+    <li>
+      <a href="crp.html">Conservation Data</a>
+    </li>
+    <li>
+      <a href="analysis.html">Comparative Analysis</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -302,7 +270,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -432,10 +400,10 @@ print(length(results))</code></pre>
 <pre class="r"><code>DT &lt;- rbindlist(results, use.names = TRUE, idcol = &quot;state_abb&quot;)</code></pre>
 <p>Check the data type of each column in the result set.</p>
 <pre class="r"><code>str(DT)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14540 obs. of  3 variables:
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14570 obs. of  3 variables:
 ##  $ state_abb: chr  &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; ...
-##  $ date     : chr  &quot;202104&quot; &quot;202103&quot; &quot;202102&quot; &quot;202101&quot; ...
-##  $ barrel   : chr  &quot;387&quot; &quot;379&quot; &quot;339&quot; &quot;367&quot; ...
+##  $ date     : chr  &quot;202105&quot; &quot;202104&quot; &quot;202103&quot; &quot;202102&quot; ...
+##  $ barrel   : chr  &quot;395&quot; &quot;387&quot; &quot;379&quot; &quot;339&quot; ...
 ##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
 <p>Now let’s find any NA values in the date column and filter them out - these are from the states without data.</p>
 <pre class="r"><code>print(any(is.na(DT$date)))</code></pre>
@@ -454,12 +422,12 @@ DT[, date := as.Date(date, &quot;%Y%m%d&quot;)]
 DT[, year := year(date)]</code></pre>
 <p>Check the data types once again to make sure everything is squared away.</p>
 <pre class="r"><code>str(DT)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14520 obs. of  5 variables:
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14550 obs. of  5 variables:
 ##  $ state_abb: chr  &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; ...
-##  $ date     : Date, format: &quot;2021-04-01&quot; &quot;2021-03-01&quot; ...
-##  $ barrel   : num  387 379 339 367 379 355 379 334 380 363 ...
+##  $ date     : Date, format: &quot;2021-05-01&quot; &quot;2021-04-01&quot; ...
+##  $ barrel   : num  395 387 379 339 383 380 355 378 333 380 ...
 ##  $ state    : chr  &quot;ALABAMA&quot; &quot;ALABAMA&quot; &quot;ALABAMA&quot; &quot;ALABAMA&quot; ...
-##  $ year     : int  2021 2021 2021 2021 2020 2020 2020 2020 2020 2020 ...
+##  $ year     : int  2021 2021 2021 2021 2021 2020 2020 2020 2020 2020 ...
 ##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
 <p>Reorder the columns in the table and set keys for the data.</p>
 <pre class="r"><code>setcolorder(DT, c(&#39;state_abb&#39;, &#39;state&#39;, &#39;year&#39;, &#39;date&#39;, &#39;barrel&#39;))
@@ -476,28 +444,28 @@ setkey(DT, state_abb, date)</code></pre>
 <p>View the bottom 6 rows of the data.</p>
 <pre class="r"><code>tail(DT)</code></pre>
 <pre><code>##    state_abb   state year       date barrel
-## 1:        WY WYOMING 2020 2020-11-01   7078
-## 2:        WY WYOMING 2020 2020-12-01   7292
-## 3:        WY WYOMING 2021 2021-01-01   7310
-## 4:        WY WYOMING 2021 2021-02-01   6147
-## 5:        WY WYOMING 2021 2021-03-01   6946
-## 6:        WY WYOMING 2021 2021-04-01   6969</code></pre>
+## 1:        WY WYOMING 2020 2020-12-01   7368
+## 2:        WY WYOMING 2021 2021-01-01   7310
+## 3:        WY WYOMING 2021 2021-02-01   6147
+## 4:        WY WYOMING 2021 2021-03-01   6959
+## 5:        WY WYOMING 2021 2021-04-01   6987
+## 6:        WY WYOMING 2021 2021-05-01   7073</code></pre>
 <p>View a summary of the statistics of the entire data set.</p>
 <pre class="r"><code>summary(DT)</code></pre>
 <pre><code>##   state_abb            state                year           date           
-##  Length:14520       Length:14520       Min.   :1981   Min.   :1981-01-01  
-##  Class :character   Class :character   1st Qu.:1991   1st Qu.:1991-01-24  
-##  Mode  :character   Mode  :character   Median :2001   Median :2001-02-15  
-##                                        Mean   :2001   Mean   :2001-02-14  
-##                                        3rd Qu.:2011   3rd Qu.:2011-03-08  
-##                                        Max.   :2021   Max.   :2021-04-01  
+##  Length:14550       Length:14550       Min.   :1981   Min.   :1981-01-01  
+##  Class :character   Class :character   1st Qu.:1991   1st Qu.:1991-02-01  
+##  Mode  :character   Mode  :character   Median :2001   Median :2001-03-01  
+##                                        Mean   :2001   Mean   :2001-03-01  
+##                                        3rd Qu.:2011   3rd Qu.:2011-04-01  
+##                                        Max.   :2021   Max.   :2021-05-01  
 ##      barrel      
 ##  Min.   :     0  
-##  1st Qu.:   146  
+##  1st Qu.:   147  
 ##  Median :   861  
-##  Mean   :  6134  
-##  3rd Qu.:  4523  
-##  Max.   :168542</code></pre>
+##  Mean   :  6142  
+##  3rd Qu.:  4524  
+##  Max.   :168487</code></pre>
 <p>Note that the Min. date is 1981-01-01 and the Max. date is 2021-04-01. This means if we ever want to look at annual production, the 2021 numbers will be much lower than all other years. For example.</p>
 <pre class="r"><code>dt &lt;- DT[, .(total_barrels = sum(barrel)), by = .(year)]
 ggplot(dt, aes(x = year, y = total_barrels)) + 
@@ -564,7 +532,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>

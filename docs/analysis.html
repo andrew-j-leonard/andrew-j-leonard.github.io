@@ -16,10 +16,19 @@
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -34,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -51,32 +55,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
 
@@ -87,10 +65,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -107,40 +81,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -168,7 +115,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -180,7 +127,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -191,10 +138,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -206,7 +166,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -278,21 +237,30 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Andrew Leonard's Site</a>
+      <a class="navbar-brand" href="index.html">Andrew Leonard's Portfolio</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
   <a href="index.html">Resume</a>
 </li>
-<li>
-  <a href="oil.html">Oil Data</a>
-</li>
-<li>
-  <a href="crp.html">Conservation Data</a>
-</li>
-<li>
-  <a href="analysis.html">Comparative Analysis</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="oil.html">Oil Data</a>
+    </li>
+    <li>
+      <a href="crp.html">Conservation Data</a>
+    </li>
+    <li>
+      <a href="analysis.html">Comparative Analysis</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -302,7 +270,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -318,7 +286,7 @@ $(document).ready(function () {
 <div id="this-document-will-provide-a-comparison-of-the-us-eias-oil-production-data-and-the-usdas-crp-enrollment-data-using-r-markdown-and-tabeau.-please-refer-to-the-other-pages-in-this-site-in-order-to-learn-how-to-extract-clean-and-save-this-data-locally." class="section level3">
 <h3>This document will provide a comparison of the <a href="https://andrew-j-leonard.github.io/oil.html">US EIA’s Oil Production data</a> and the <a href="https://andrew-j-leonard.github.io/crp.html">USDA’s CRP Enrollment data</a> using R Markdown and Tabeau. Please refer to the other pages in this site in order to learn how to extract, clean, and save this data locally.</h3>
 <p>I began my career working in the ag commodities market in 2015. At the time, the <a href="https://blogs.worldbank.org/developmenttalk/what-triggered-oil-price-plunge-2014-2016-and-why-it-failed-deliver-economic-impetus-eight-charts#:~:text=The%20initial%20drop%20in%20oil,concerns%2C%20and%20shifting%20OPEC%20policies.&amp;text=This%20partly%20explains%20why%20the,subsequent%20boost%20to%20global%20activity.">price of oil was plunging</a> due to the increase in US shale oil production - obviously this had an <a href="https://www.investopedia.com/ask/answers/030415/how-does-price-oil-affect-stock-market.asp">impact on the price of agricultural commodities</a> as well.</p>
-<p>The practice used in shale oil production is known as <a href="https://www.usgs.gov/faqs/what-hydraulic-fracturing?qt-news_science_products=0#">hydraulic fracturing</a> AKA “fracking” which has been around since the late 1980’s. Fracking can be a controversial subject because of its <a href="https://www.usgs.gov/faqs/what-environmental-issues-are-associated-hydraulic-fracturing?qt-news_science_products=0#qt-news_science_products">effects on the environment</a> so I was curious what other facets of agriculture could be affected by shale oil production.</p>
+<p>The practice used in shale oil production is known as <a href="https://www.usgs.gov/faqs/what-hydraulic-fracturing?qt-news_science_products=0#">hydraulic fracturing</a> AKA “fracking” which has been around <a href="https://www.usgs.gov/faqs/when-did-hydraulic-fracturing-become-such-a-popular-approach-oil-and-gas-production?qt-news_science_products=0#qt-news_science_products">since the late 1980’s</a>. Fracking can be a controversial subject because of its <a href="https://www.usgs.gov/faqs/what-environmental-issues-are-associated-hydraulic-fracturing?qt-news_science_products=0#qt-news_science_products">effects on the environment</a> so I was curious what other facets of agriculture could be affected by shale oil production.</p>
 </div>
 </div>
 <div id="crp-data" class="section level2">
@@ -402,16 +370,16 @@ setorder(max_oil_dt, -sum_barrel)
 max_oil_dt[, rank := .I]
 head(max_oil_dt, 10)</code></pre>
 <pre><code>##     state_abb        state year sum_barrel avg_barrels_per_day rank
-##  1:        TX        TEXAS 2019    1850714           5069.3046    1
-##  2:        ND NORTH DAKOTA 2019     518874           1420.8579    2
-##  3:        NM   NEW MEXICO 2019     329483            902.3658    3
-##  4:        OK     OKLAHOMA 2019     211809            580.2589    4
-##  5:        CO     COLORADO 2019     189707            519.6802    5
+##  1:        TX        TEXAS 2019    1861762           5099.4829    1
+##  2:        ND NORTH DAKOTA 2019     517682           1417.6003    2
+##  3:        NM   NEW MEXICO 2019     331985            909.1404    3
+##  4:        OK     OKLAHOMA 2019     215582            590.4835    4
+##  5:        CO     COLORADO 2019     192383            526.9238    5
 ##  6:        AK       ALASKA 2019     169946            465.7864    6
-##  7:        CA   CALIFORNIA 2019     161483            442.4979    7
-##  8:        WY      WYOMING 2019     102104            279.6475    8
-##  9:        LA    LOUISIANA 2019      45922            125.8415    9
-## 10:        UT         UTAH 2019      36693            100.5414   10</code></pre>
+##  7:        CA   CALIFORNIA 2019     156350            428.5063    7
+##  8:        WY      WYOMING 2019     102171            279.8368    8
+##  9:        LA    LOUISIANA 2019      45897            125.7719    9
+## 10:        UT         UTAH 2019      36933            101.1966   10</code></pre>
 <p>Let’s compare that to the ranking for CRP.</p>
 <pre class="r"><code>head(max_crp_dt, 10)</code></pre>
 <pre><code>##            state year   acres max_year rank
@@ -455,7 +423,7 @@ ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) +
 <pre><code>## Warning: Removed 30 rows containing missing values (geom_segment).</code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Much better! Now we can see there is a distinct linear trend between the number of acres enrolled in the Conservation Reserve Program and the average quantity (1,000’s barrels) of oil produced within the same state.</p>
-<p>More precisely, we can see that 87.98% of the variance in the acres enrolled in CRP can be explained by the variance in the average number of barrels of crude produced in these same states.</p>
+<p>More precisely, we can see that 87.83% of the variance in the acres enrolled in CRP can be explained by the variance in the average number of barrels of crude produced in these same states.</p>
 <pre class="r"><code>mod &lt;- lm(acres ~ avg_barrels_per_day, DT)
 summary(mod)</code></pre>
 <pre><code>## 
@@ -464,18 +432,18 @@ summary(mod)</code></pre>
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1557098  -639627   264741   484755  2099781 
+## -1554132  -641319   268838   475641  2138121 
 ## 
 ## Coefficients:
 ##                     Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)         20682798     349212   59.23  &lt; 2e-16 ***
-## avg_barrels_per_day   -18739       1309  -14.32 2.08e-14 ***
+## (Intercept)         20668945     350739   58.93  &lt; 2e-16 ***
+## avg_barrels_per_day   -18670       1313  -14.22 2.47e-14 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 898600 on 28 degrees of freedom
-## Multiple R-squared:  0.8798, Adjusted R-squared:  0.8755 
-## F-statistic:   205 on 1 and 28 DF,  p-value: 2.081e-14</code></pre>
+## Residual standard error: 904200 on 28 degrees of freedom
+## Multiple R-squared:  0.8783, Adjusted R-squared:  0.874 
+## F-statistic: 202.1 on 1 and 28 DF,  p-value: 2.474e-14</code></pre>
 </div>
 
 
@@ -505,7 +473,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>

@@ -5,9 +5,14 @@ navbar:
   left:
     - text: "Resume"
       href: index.html
-    - text: "Oil Data"
-      href: oil.html
-    - text: "Conservation Data"
-      href: crp.html
-    - text: "Comparative Analysis"
-      href: analysis.html
+    - text: "Examples"
+      menu: 
+      - text: "Oil Data"
+        href: oil.html
+      - text: "Conservation Data"
+        href: crp.html
+      - text: "Comparative Analysis"
+        href: analysis.html
+output: 
+  html_document: 
+    theme: yeti
