@@ -32,6 +32,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -296,12 +298,10 @@ $(document).ready(function () {
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<div id="this-r-markdown-document-will-provide-an-example-of-how-to-access-data-for-the-usdas-conservation-reserve-program-crp.-in-this-example-i-will-read-an-excel-document-located-on-the-usdas-website-containing-data-for-crp-enrollment-and-rental-payments-by-state-1986-2019." class="section level3">
-<h3>This R Markdown document will provide an example of how to access data for the <a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/conservation-reserve-program/">USDA’s Conservation Reserve Program (CRP)</a>. In this example, I will read an Excel document located on the USDA’s website containing data for <a href="https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/Conservation/Excel/HistoryState86-19.xlsx">CRP Enrollment and Rental Payments by State, 1986-2019</a>.</h3>
+<p>This R Markdown document will provide an example of how to access data for the <a href="https://www.fsa.usda.gov/programs-and-services/conservation-programs/conservation-reserve-program/">USDA’s Conservation Reserve Program (CRP)</a>. In this example, I will read an Excel document located on the USDA’s website containing data for <a href="https://www.fsa.usda.gov/Assets/USDA-FSA-Public/usdafiles/Conservation/Excel/HistoryState86-19.xlsx">CRP Enrollment and Rental Payments by State, 1986-2019</a>.</p>
 <p>Note, if a variable name begins with a <code>.</code> this is simply to avoid conflicting names with <a href="https://rdrr.io/r/base/Reserved.html">R keywords</a> or other variables.</p>
-</div>
-<div id="read-the-data." class="section level3">
-<h3>Read the data.</h3>
+<div id="read-the-data" class="section level3">
+<h3>Read the data</h3>
 <p>Let’s start by loading the necessary packages</p>
 <pre class="r"><code>library(&quot;openxlsx&quot;)
 library(&quot;data.table&quot;)
@@ -349,8 +349,8 @@ setDT(DT)</code></pre>
 ## 5:   87660.0   83113.7   81456.2   79611.04   74336.77   42788.19   42735.31
 ## 6: 2067070.1 1988096.2 1912358.4 1853457.21 1779117.03 1813765.63 1838914.49</code></pre>
 </div>
-<div id="clean-the-data." class="section level3">
-<h3>Clean the data.</h3>
+<div id="clean-the-data" class="section level3">
+<h3>Clean the data</h3>
 <p>Un-pivot the data in order to make it easier to work with.</p>
 <pre class="r"><code>DT &lt;- data.table::melt(DT, id.vars = &quot;STATE&quot;, variable.name = &quot;YEAR&quot;, value.name = &quot;ACRES&quot;)</code></pre>
 <p>View the top 3 rows of the table.</p>
@@ -369,7 +369,62 @@ setDT(DT)</code></pre>
 ## 1:   206581
 ## 2: 22324912
 ## 3:       NA</code></pre>
-<p>Looks like we grabbed a blank row (row where STATE = 1/ Fiscal years end September 30th. Not including Virginia cities.) as well as the US total (row where STATE = U.S.). Let’s filter the entire table by selecting only rows containing the name of an actual state.</p>
+<p>Looks like we grabbed a blank row (where STATE = “1/ Fiscal years end September 30th…”). We also grabbed the US total (where STATE = “U.S.”).</p>
+<pre class="r"><code>unique(DT$STATE)</code></pre>
+<pre><code>##  [1] &quot;ALABAMA&quot;                                                           
+##  [2] &quot;ALASKA&quot;                                                            
+##  [3] &quot;ARIZONA&quot;                                                           
+##  [4] &quot;ARKANSAS&quot;                                                          
+##  [5] &quot;CALIFORNIA&quot;                                                        
+##  [6] &quot;COLORADO&quot;                                                          
+##  [7] &quot;CONNECTICUT&quot;                                                       
+##  [8] &quot;DELAWARE&quot;                                                          
+##  [9] &quot;FLORIDA&quot;                                                           
+## [10] &quot;GEORGIA&quot;                                                           
+## [11] &quot;HAWAII&quot;                                                            
+## [12] &quot;IDAHO&quot;                                                             
+## [13] &quot;ILLINOIS&quot;                                                          
+## [14] &quot;INDIANA&quot;                                                           
+## [15] &quot;IOWA&quot;                                                              
+## [16] &quot;KANSAS&quot;                                                            
+## [17] &quot;KENTUCKY&quot;                                                          
+## [18] &quot;LOUISIANA&quot;                                                         
+## [19] &quot;MAINE&quot;                                                             
+## [20] &quot;MARYLAND&quot;                                                          
+## [21] &quot;MASSACHUSETTS&quot;                                                     
+## [22] &quot;MICHIGAN&quot;                                                          
+## [23] &quot;MINNESOTA&quot;                                                         
+## [24] &quot;MISSISSIPPI&quot;                                                       
+## [25] &quot;MISSOURI&quot;                                                          
+## [26] &quot;MONTANA&quot;                                                           
+## [27] &quot;NEBRASKA&quot;                                                          
+## [28] &quot;NEVADA&quot;                                                            
+## [29] &quot;NEW HAMPSHIRE&quot;                                                     
+## [30] &quot;NEW JERSEY&quot;                                                        
+## [31] &quot;NEW MEXICO&quot;                                                        
+## [32] &quot;NEW YORK&quot;                                                          
+## [33] &quot;NORTH CAROLINA&quot;                                                    
+## [34] &quot;NORTH DAKOTA&quot;                                                      
+## [35] &quot;OHIO&quot;                                                              
+## [36] &quot;OKLAHOMA&quot;                                                          
+## [37] &quot;OREGON&quot;                                                            
+## [38] &quot;PENNSYLVANIA&quot;                                                      
+## [39] &quot;PUERTO RICO&quot;                                                       
+## [40] &quot;RHODE ISLAND&quot;                                                      
+## [41] &quot;SOUTH CAROLINA&quot;                                                    
+## [42] &quot;SOUTH DAKOTA&quot;                                                      
+## [43] &quot;TENNESSEE&quot;                                                         
+## [44] &quot;TEXAS&quot;                                                             
+## [45] &quot;UTAH&quot;                                                              
+## [46] &quot;VERMONT&quot;                                                           
+## [47] &quot;VIRGINIA&quot;                                                          
+## [48] &quot;WASHINGTON&quot;                                                        
+## [49] &quot;WEST VIRGINIA&quot;                                                     
+## [50] &quot;WISCONSIN&quot;                                                         
+## [51] &quot;WYOMING&quot;                                                           
+## [52] &quot;U.S.&quot;                                                              
+## [53] &quot;1/ Fiscal years end September 30th. Not including Virginia cities.&quot;</code></pre>
+<p>Let’s filter the entire table by selecting only rows containing the name of an actual state.</p>
 <pre class="r"><code>state_names &lt;- toupper(state.name)
 DT &lt;- DT[STATE %in% state_names]
 unique(DT$STATE)</code></pre>
@@ -396,11 +451,18 @@ ggplot(dt, aes(x = as.character(year), y = total_acres)) +
   geom_point() + 
   theme(axis.text.x = element_text(angle = 45)) + 
   labs(y = &quot;Total Acres&quot;, x = &quot;Year&quot;)</code></pre>
-<p><img src="crp_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="crp_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>You can view all of the data in this paged table.</p>
+<pre class="r"><code>rmarkdown::paged_table(dt, options = list(rows.print = 10))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["year"],"name":[1],"type":["fct"],"align":["left"]},{"label":["total_acres"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["avg_acres"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1986","2":"1929004","3":"38580.08"},{"1":"1987","2":"15348560","3":"306971.21"},{"1":"1988","2":"23870224","3":"477404.48"},{"1":"1989","2":"28875729","3":"577514.59"},{"1":"1990","2":"32521909","3":"650438.18"},{"1":"1991","2":"32995310","3":"659906.20"},{"1":"1992","2":"33992827","3":"679856.55"},{"1":"1993","2":"35014556","3":"700291.12"},{"1":"1994","2":"35014556","3":"700291.12"},{"1":"1995","2":"34977196","3":"699543.92"},{"1":"1996","2":"34503210","3":"690064.21"},{"1":"1997","2":"32816728","3":"656334.57"},{"1":"1998","2":"30134085","3":"602681.70"},{"1":"1999","2":"29822771","3":"596455.42"},{"1":"2000","2":"31424918","3":"628498.35"},{"1":"2001","2":"33607673","3":"672153.47"},{"1":"2002","2":"33963715","3":"679274.29"},{"1":"2003","2":"34110464","3":"682209.29"},{"1":"2004","2":"34706180","3":"694123.60"},{"1":"2005","2":"34901193","3":"698023.86"},{"1":"2006","2":"36002268","3":"720045.36"},{"1":"2007","2":"36770039","3":"735400.78"},{"1":"2008","2":"34610474","3":"692209.47"},{"1":"2009","2":"33719224","3":"674384.48"},{"1":"2010","2":"31296193","3":"625923.86"},{"1":"2011","2":"31122485","3":"622449.69"},{"1":"2012","2":"29524400","3":"590488.01"},{"1":"2013","2":"26837619","3":"536752.37"},{"1":"2014","2":"25447592","3":"508951.85"},{"1":"2015","2":"24185328","3":"483706.56"},{"1":"2016","2":"23883057","3":"477661.15"},{"1":"2017","2":"23432210","3":"468644.19"},{"1":"2018","2":"22608417","3":"452168.34"},{"1":"2019","2":"22324397","3":"446487.93"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
-<div id="save-the-data." class="section level3">
-<h3>Save the data.</h3>
-<p>Save the results.</p>
+</div>
+<div id="save-the-data" class="section level3">
+<h3>Save the data</h3>
+<p>Save the results to a CSV file.</p>
 <pre class="r"><code>csv_fname &lt;- here(&quot;Data&quot;, &quot;usda_crp_enrollment.csv&quot;)
 fwrite(DT, csv_fname)</code></pre>
 <p>And that’s it! I hope this was helpful. Please feel free to reach out with any questions or concerns.</p>

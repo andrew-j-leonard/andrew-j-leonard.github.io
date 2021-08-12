@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Overview
 
-### This document will provide a comparison of the [US EIA's Oil Production data](https://andrew-j-leonard.github.io/oil.html) and the [USDA's CRP Enrollment data](https://andrew-j-leonard.github.io/crp.html) using R Markdown and Tabeau. Please refer to the other pages in this site in order to learn how to extract, clean, and save this data locally.
+This document will provide a comparison of the [US EIA's Oil Production data](https://andrew-j-leonard.github.io/oil.html) and the [USDA's CRP Enrollment data](https://andrew-j-leonard.github.io/crp.html) using R Markdown, Tabeau Public, and Linear Regression. Please refer to the other pages in this site in order to learn how to extract, clean, and save this data locally.
 
 I began my career working in the ag commodities market in 2015.  At the time, the [price of oil was plunging](https://blogs.worldbank.org/developmenttalk/what-triggered-oil-price-plunge-2014-2016-and-why-it-failed-deliver-economic-impetus-eight-charts#:~:text=The%20initial%20drop%20in%20oil,concerns%2C%20and%20shifting%20OPEC%20policies.&text=This%20partly%20explains%20why%20the,subsequent%20boost%20to%20global%20activity.) due to the increase in US shale oil production - obviously this had an [impact on the price of agricultural commodities](https://www.investopedia.com/ask/answers/030415/how-does-price-oil-affect-stock-market.asp) as well. 
 
@@ -82,6 +82,8 @@ read_html("oil_all_states.html")
 ```
 
 
+<br/>
+
 The states we're primarily interested in are TX, ND, SD, CO, MT, NE, NM, WY, PA, WV, OH, NY, LA, OK, and AR.
 ![https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/United_States_Shale_gas_plays%2C_May_2011.pdf/page1-1650px-United_States_Shale_gas_plays%2C_May_2011.pdf.jpg](Img/page1-1650px-United_States_Shale_gas_plays,_May_2011.pdf.jpg)
 ![https://www.eia.gov/naturalgas/weekly/archivenew_ngwu/2021/02_18/img/202101_monthly_dry_shale.png](Img/202101_monthly_dry_shale.png)
@@ -117,10 +119,13 @@ I created another dashboard for only these states in [Tableau Public](https://pu
 read_html("crp_fracking_states.html")
 ```
 
+<br/>
+
 And I did the same thing using oil data in [Tableau Public](https://public.tableau.com/views/USEIAOilProduction/dashFrackingStatesOil?:language=en-US&publish=yes&:display_count=n&:origin=viz_share_link).
 ```{r}
 read_html("oil_fracking_states.html")
 ```
+<br/>
 
 Now join the CRP and Oil Production data and compare.
 ```{r}
@@ -146,12 +151,12 @@ ggplot(DT, aes(x = avg_barrels_per_day, y = acres)) +
 
 Much better!  Now we can see there is a distinct linear trend between the number of acres enrolled in the Conservation Reserve Program and the average quantity (1,000's barrels) of oil produced within the same state.
 
-
 ```{r include = FALSE}
 r_squared <- cor(DT$avg_barrels_per_day, DT$acres)**2 * 100
 r_squared <- round(r_squared, 2)
 r_squared <- as.character(r_squared)
 ```
+
 More precisely, we can see that `r r_squared`% of the variance in the acres enrolled in CRP can be explained by the variance in the average number of barrels of crude produced in these same states. 
 ```{r}
 mod <- lm(acres ~ avg_barrels_per_day, DT)

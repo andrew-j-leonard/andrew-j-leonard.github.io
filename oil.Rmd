@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Overview
 
-### This R Markdown document will provide an example of how to access [monthly U.S. field production of crude oil data by state](https://www.eia.gov/dnav/pet/pet_crd_crpdn_adc_mbblpd_m.htm) via the [U.S. Energy Information Administration (EIA) API](https://www.eia.gov/opendata/register.php) and save the results to a CSV file.
+This R Markdown document will provide an example of how to access [monthly U.S. field production of crude oil data by state](https://www.eia.gov/dnav/pet/pet_crd_crpdn_adc_mbblpd_m.htm) via the [U.S. Energy Information Administration (EIA) API](https://www.eia.gov/opendata/register.php) and save the results to a CSV file.
 
 Note, if a variable name begins with a `.` this is simply to avoid conflicting names with [R keywords](https://rdrr.io/r/base/Reserved.html) or other variables.
 
