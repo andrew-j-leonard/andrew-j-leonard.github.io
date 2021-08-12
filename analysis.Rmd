@@ -60,7 +60,7 @@ I created a dashboard in [Tableau Public](https://public.tableau.com/views/Acres
 read_html("crp_all_states.html")
 ```
 
-<br/>
+</br>
 
 ## Oil Data
 
@@ -82,7 +82,7 @@ I created another dashboard in [Tableau Public](https://public.tableau.com/views
 read_html("oil_all_states.html")
 ```
 
-<br/>
+</br>
 
 The states we're primarily interested in are TX, ND, SD, CO, MT, NE, NM, WY, PA, WV, OH, NY, LA, OK, and AR.
 ![https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/United_States_Shale_gas_plays%2C_May_2011.pdf/page1-1650px-United_States_Shale_gas_plays%2C_May_2011.pdf.jpg](Img/page1-1650px-United_States_Shale_gas_plays,_May_2011.pdf.jpg)
@@ -116,13 +116,13 @@ I created another dashboard in [Tableau Public](https://public.tableau.com/views
 read_html("crp_fracking_states.html")
 ```
 
-<br/>
+</br>
 
 And I did the same thing using oil data in [Tableau Public](https://public.tableau.com/views/USEIAOilProduction/dashFrackingStatesOil?:language=en-US&publish=yes&:display_count=n&:origin=viz_share_link).
 ```{r}
 read_html("oil_fracking_states.html")
 ```
-<br/>
+</br>
 
 ## Linear Regression Model
 
@@ -157,7 +157,7 @@ r_squared <- round(r_squared, 2)
 r_squared <- as.character(r_squared)
 ```
 
-More precisely, `r r_squared`% of the variance in the acres enrolled in CRP can be explained by the variance in the average number of barrels of crude produced in these same states according to our model. 
+More precisely, <b>`r r_squared`%</b> of the variance in the acres enrolled in CRP can be explained by the variance in the average number of barrels of crude produced in these same states according to our model. 
 ```{r}
 mod <- lm(acres ~ avg_barrels_per_day, DT)
 summary(mod)
@@ -187,7 +187,7 @@ mod <- lm(ln_acres ~ avg_barrels_per_day, DT)
 summary(mod)
 ```
 
-Not bad. We can see the log-linear model is a little better than the linear model.  According to our log-linear model, `r r_squared`% of the variance in the natural log of acres enrolled in CRP can be explained by the variance in the average number of barrels of crude produced in these same states. 
+Not bad. We can see the log-linear model is a little better than the linear model.  According to our log-linear model, <b>`r r_squared`%</b> of the variance in the natural log of acres enrolled in CRP can be explained by the variance in the average number of barrels of crude produced in these same states. 
 
 ## Log-Log Regression Model
 
@@ -206,7 +206,7 @@ mod <- lm(ln_acres ~ ln_avg_barrels_per_day, DT)
 summary(mod)
 ```
 
-Hey-oh now we're coookin!  Now let's check the residuals - they appear to be approximately normally distributed.
+Now let's check the residuals - they should be approximately normally distributed.
 ```{r}
 .residuals <- mod$residuals
 hist(.residuals)
@@ -218,11 +218,12 @@ r_squared <- round(r_squared, 2)
 r_squared <- as.character(r_squared)
 ```
 
-According to our log-log model `r r_squared`% of the variance in the natural log of acres enrolled in CRP can be explained by the variance in the natural log of average number of barrels of crude produced in these same states. 
-
+Hey-oh now we're coookin!  According to our log-log model <b>`r r_squared`%</b> of the variance in the natural log of acres enrolled in CRP can be explained by the variance in the natural log of average number of barrels of crude produced in these same states. 
+ 
 ```{r include = FALSE}
 slope_coeff <- round(mod$coefficients[[2]] * 100, 2)
 increase_decrease_str <- if (slope_coeff < 0) "decrease" else "increase"
+slope_coeff <- abs(slope_coeff)
 ```
 
-Furthermore, since this is a [log-log model](https://stats.idre.ucla.edu/other/mult-pkg/faq/general/faqhow-do-i-interpret-a-regression-model-when-some-variables-are-log-transformed/) we know that the slope coefficient is the [elasticity](https://stackoverflow.com/a/56614010/8623742).  Therefore, according to our log-log model, a 100% increase in the Avg Barrel Produced per Day in 1000's will result in an approximate `r slope_coeff`% `r increase_decrease_str` in Acres Enrolled in CRP.
+Furthermore, since this is a [log-log model](https://stats.idre.ucla.edu/other/mult-pkg/faq/general/faqhow-do-i-interpret-a-regression-model-when-some-variables-are-log-transformed/) we know that the slope coefficient is the [elasticity](https://stackoverflow.com/a/56614010/8623742).  Therefore, according to our log-log model, a <b>100% increase</b> in the Avg Barrel Produced per Day in 1000's will result in an approximate <b>`r slope_coeff`% `r increase_decrease_str`</b> in Acres Enrolled in CRP.
