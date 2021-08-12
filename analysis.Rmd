@@ -206,7 +206,7 @@ mod <- lm(ln_acres ~ ln_avg_barrels_per_day, DT)
 summary(mod)
 ```
 
-And check the residuals - they appear to be approximately normally distributed.
+Hey-oh now we're coookin!  Now let's check the residuals - they appear to be approximately normally distributed.
 ```{r}
 .residuals <- mod$residuals
 hist(.residuals)
