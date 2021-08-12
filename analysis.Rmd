@@ -233,4 +233,4 @@ slope_coeff <- as.character(slope_coeff)
 
 Furthermore, since this is a [log-log model](https://stats.idre.ucla.edu/other/mult-pkg/faq/general/faqhow-do-i-interpret-a-regression-model-when-some-variables-are-log-transformed/) we know that the slope coefficient is the [elasticity](https://stackoverflow.com/a/56614010/8623742).  
 
-Therefore, according to our log-log model, a <b>1% increase</b> in the Avg Barrel Produced per Day in 1000's will result in an approximate <b>`r slope_coeff`% `r increase_decrease_str`</b> in the Acres Enrolled in CRP for states where hydraulic fracturing is used for oil production.
+Therefore, according to our log-log model, a <b>1% increase</b> in the Avg Barrel Produced per Day in 1000's will result in an approximate <b>`r slope_coeff`% `r increase_decrease_str`</b> in the Acres Enrolled in CRP for states where hydraulic fracturing is utilized for oil production.
