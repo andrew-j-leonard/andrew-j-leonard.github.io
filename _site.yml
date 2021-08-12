@@ -18,6 +18,8 @@ navbar:
       icon: fa-linkedin
     - href: "https://github.com/andrew-j-leonard"
       icon: fa-github
+    - href: "https://stackoverflow.com/users/8623742/andrew" 
+      icon: fa-stack-overflow
 output: 
   html_document: 
     theme: yeti
