@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Andrew Leonard" />
+
+<meta name="date" content="2021-09-24" />
+
+<title>Wrangling Oil Production Data with R and RESTful API’s</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Example</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="https://andrew-j-leonard.github.io">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://www.linkedin.com/in/andrew-leonard-83229389/">
+    <span class="fa fa-linkedin"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/andrew-j-leonard">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://stackoverflow.com/users/8623742/andrew">
+    <span class="fa fa-stack-overflow"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Wrangling Oil Production Data with R and RESTful API’s</h1>
+<h4 class="author">Andrew Leonard</h4>
+<h4 class="date">2021-09-24</h4>
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>This R Markdown document is part of a series of examples similar to this one. The purpose of the examples is to demonstrate how to solve problems in data science and analytics engineering with various tools, strategies, and techniques.</p>
+<p>If you want to learn more about these examples, please checkout the <a href="https://andrew-j-leonard.github.io">home page</a>.</p>
+<div id="purpose-of-this-document" class="section level2">
+<h2>Purpose of This Document</h2>
+<p>The purpose of this R Markdown document is to demonstrate how R can be used to solve problems in data science and analytics engineering.</p>
+<p>In this example, R is used to:</p>
+<ol style="list-style-type: decimal">
+<li>Securely extract data from an API</li>
+<li>Wrangle data and convert data types</li>
+<li>Identify and fix “weird” values in data</li>
+</ol>
+</div>
+<div id="syntax-commonly-used" class="section level2">
+<h2>Syntax Commonly Used</h2>
+<p>If a variable name begins with a <code>.</code> this is simply to avoid conflicting names with <a href="https://rdrr.io/r/base/Reserved.html">R keywords</a> or other variables in the <code>namespace</code>.</p>
+</div>
+</div>
+<div id="scenario" class="section level1">
+<h1>Scenario</h1>
+<p>In both data science and analytics engineering, you will inevitably encounter <a href="https://en.wikipedia.org/wiki/API">Application Programming Interfaces (APIs)</a>. If you’re not familiar with APIs but would like to learn more about them, your journey down that rabbit hole can begin with <a href="https://www.redhat.com/en/topics/api/what-are-application-programming-interfaces">this post on Redhat’s website</a> 😄.</p>
+<div id="outline" class="section level2">
+<h2>Outline</h2>
+<p>For this example, I want to use R to download oil production data from the <a href="https://www.eia.gov/">U.S. Energy Information Administration</a> to my local machine via their <a href="https://www.eia.gov/opendata/">RESTful API</a>.</p>
+<p>When it comes to <a href="https://en.wikipedia.org/wiki/Data_wrangling">data wrangling</a> and <a href="https://en.wikipedia.org/wiki/Extract,_transform,_load">Extract, Transform, Load (ETL)</a>, I find it easiest to start by drawing it out.</p>
+</div>
+<div id="driagram" class="section level2">
+<h2>Driagram</h2>
+<div class="figure">
+<img src="Img/how-it-works0.svg" fig.align="center" alt="" />
+<p class="caption">Drawn with <a href="https://app.diagrams.net/" class="uri">https://app.diagrams.net/</a></p>
+</div>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>Let’s start off by loading the necessary packages.</p>
+<div id="required-r-packages" class="section level3">
+<h3>Required R Packages</h3>
+<pre class="r"><code>library(&quot;glue&quot;)
+library(&quot;httr&quot;)
+library(&quot;jsonlite&quot;)
+library(&quot;data.table&quot;)
+library(&quot;anytime&quot;)
+library(&quot;ggplot2&quot;)
+suppressMessages(library(&quot;here&quot;))</code></pre>
+</div>
+<div id="eia-api-key" class="section level3">
+<h3>EIA API Key</h3>
+<p>In order to use the EIA API, we need an API key. An <a href="https://en.wikipedia.org/wiki/Application_programming_interface_key">API key</a> is just a unique string of characters that the EIA server uses to identify who is asking for the data. You can register for a key <a href="https://www.eia.gov/opendata/register.php">here</a>. Once you have an API key, just copy and paste it into a text file and save it locally. <img src="Img/eia_api_key.png" alt="C:/users//Documents/Creds/eia_api_key.txt" />.</p>
+</div>
+</div>
+<div id="execute" class="section level2">
+<h2>Execute</h2>
+<div id="setup-function-to-send-get-request-to-eia-api" class="section level3">
+<h3>1 - Setup function to send GET request to EIA API</h3>
+<div class="figure">
+<img src="Img/how-it-works1.svg" fig.align="center" fig.width="50%" fig.height="50%" alt="" />
+<p class="caption">Drawn with <a href="https://app.diagrams.net/" class="uri">https://app.diagrams.net/</a></p>
+</div>
+<p>Setup a function in order to read the contents of the text file containing your API key into R without sharing it with everyone on GitHub:</p>
+<pre class="r"><code>get_file_txt &lt;- function(path_to_txt) {
+  file_size &lt;- file.info(path_to_txt)$size
+  file_txt &lt;- readChar(path_to_txt, file_size)
+  return(file_txt)
+}
+
+get_api_key &lt;- function() {
+  user_profile &lt;- Sys.getenv(&quot;USERPROFILE&quot;)
+  path_to_key &lt;- file.path(user_profile, &quot;Documents&quot;, &quot;Creds&quot;, &quot;eia_api_key.txt&quot;)
+  api_key &lt;- get_file_txt(path_to_key)
+  return(api_key)
+}
+
+api_key &lt;- get_api_key()</code></pre>
+<p>Create a variable for the URL with the parameters <code>{api_key}</code> and <code>{state_abb}</code>. Then create a function to edit those parameters using the <code>glue</code> package.</p>
+<pre class="r"><code>api_url &lt;- &quot;http://api.eia.gov/series/?api_key={api_key}&amp;series_id=PET.MCRFP{state_abb}1.M&quot;
+
+format_eia_url &lt;- function(state_abb) {
+  glue(api_url, api_key = api_key, state_abb = state_abb)
+}</code></pre>
+</div>
+<div id="setup-functions-to-handle-the-apis-response" class="section level3">
+<h3>2 - Setup functions to handle the API’s response</h3>
+<div class="figure">
+<img src="Img/how-it-works2.svg" fig.align="center" alt="" />
+<p class="caption">Drawn with <a href="https://app.diagrams.net/" class="uri">https://app.diagrams.net/</a></p>
+</div>
+<p>Now let’s create functions to handle the requests.</p>
+<pre class="r"><code>get_eia_response &lt;- function(state_abb) {
+  url &lt;- format_eia_url(state_abb)
+  res &lt;- GET(url)
+  return(res)
+}
+
+response_to_json &lt;- function(res) {
+  .content &lt;- rawToChar(res$content)
+  json &lt;- fromJSON(.content)
+  return(json)
+}
+
+json_to_data &lt;- function(json) {
+  .data &lt;- json$series$data
+  return(.data)
+}</code></pre>
+<p>Some of the state abbreviations will return NULL results. We need to format these results a bit differently than the others. We’ll filter for <code>NA</code> values later in order to exclude these.</p>
+<pre class="r"><code>rename_columns &lt;- function(DT) {
+  old_names &lt;- names(DT)
+  new_names &lt;- c(&quot;date&quot;, &quot;barrel&quot;)
+  setnames(DT, old_names, new_names)
+}
+
+all_cols_to_char &lt;- function(DT) {
+  # Allows all results to be combined with rbindlist
+  for (j in names(DT)) 
+    set(DT, j = j, value = as.character(DT[[j]]))
+}
+
+# directs flow
+format_data &lt;- function(.data) {
+  DT &lt;- as.data.table(.data)
+  rename_columns(DT)
+  all_cols_to_char(DT)
+  return(DT)
+}</code></pre>
+<p>For example, CT returns an empty data set.</p>
+<pre class="r"><code>state_abb &lt;- &quot;CT&quot;
+res &lt;- get_eia_response(state_abb)
+json &lt;- response_to_json(res)
+print(json)</code></pre>
+<pre><code>## $request
+## $request$command
+## [1] &quot;series&quot;
+## 
+## $request$series_id
+## [1] &quot;pet.mcrfpct1.m&quot;
+## 
+## 
+## $data
+## $data$error
+## [1] &quot;invalid series_id. For key registration, documentation, and examples see https://www.eia.gov/developer/&quot;</code></pre>
+<pre class="r"><code>#clean up
+rm(state_abb, res, json)</code></pre>
+</div>
+<div id="create-function-to-run-it" class="section level3">
+<h3>3 - Create function to run it</h3>
+<p>Create a function to bring bring it all together.</p>
+<pre class="r"><code>run &lt;- function(state_abb) {
+  res &lt;- get_eia_response(state_abb)
+  json &lt;- response_to_json(res)
+  .data &lt;- json_to_data(json)
+  if (is.null(.data))
+    return(data.table(&quot;date&quot; = NA_character_, &quot;barrel&quot; = NA_character_))
+  format_data(.data)
+}</code></pre>
+<p>Run it for each state abbreviation one at a time. Check the length of the list at the end - it should have 50 elements (one for each state).</p>
+<pre class="r"><code>results &lt;- sapply(state.abb, run, USE.NAMES = TRUE, simplify = F)
+print(length(results))</code></pre>
+<pre><code>## [1] 50</code></pre>
+<p>Looks like we have all 50 responses. Now let’s combine them into one single table.</p>
+<pre class="r"><code>DT &lt;- rbindlist(results, use.names = TRUE, idcol = &quot;state_abb&quot;)</code></pre>
+</div>
+<div id="clean-the-data" class="section level3">
+<h3>4 - Clean the data</h3>
+<p>Check the data type of each column in the result set.</p>
+<pre class="r"><code>str(DT)</code></pre>
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14600 obs. of  3 variables:
+##  $ state_abb: chr  &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; ...
+##  $ date     : chr  &quot;202106&quot; &quot;202105&quot; &quot;202104&quot; &quot;202103&quot; ...
+##  $ barrel   : chr  &quot;345&quot; &quot;335&quot; &quot;331&quot; &quot;379&quot; ...
+##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<p>Now let’s find any NA values in the date column and filter them out - these are from the states without data.</p>
+<pre class="r"><code>print(any(is.na(DT$date)))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>DT &lt;- DT[!is.na(date)]</code></pre>
+<p>Let’s create a column with the full state name. To do this, create a function to map the state abbreviation to the state name then apply the function to the <code>state_abb</code> column in <code>DT</code>.</p>
+<pre class="r"><code>state_abb_to_name &lt;- function(state_abb) {
+  state_name &lt;- toupper(state.name[which(state.abb == state_abb)])
+  return(state_name)
+}
+DT[, state := state_abb_to_name(state_abb), by = .(state_abb)]</code></pre>
+<p>Convert <code>barrel</code> column from character to numeric and the <code>date</code> column to date and create a <code>year</code> column using the <code>date</code> column.</p>
+<pre class="r"><code>DT[, `:=` (barrel = as.numeric(barrel), 
+           date = paste0(date, &quot;01&quot;))]
+DT[, date := as.Date(date, &quot;%Y%m%d&quot;)]
+DT[, year := year(date)]</code></pre>
+<p>Check the data types once again to make sure everything is squared away.</p>
+<pre class="r"><code>str(DT)</code></pre>
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14580 obs. of  5 variables:
+##  $ state_abb: chr  &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; ...
+##  $ date     : Date, format: &quot;2021-06-01&quot; &quot;2021-05-01&quot; ...
+##  $ barrel   : num  345 335 331 379 339 383 380 355 378 333 ...
+##  $ state    : chr  &quot;ALABAMA&quot; &quot;ALABAMA&quot; &quot;ALABAMA&quot; &quot;ALABAMA&quot; ...
+##  $ year     : int  2021 2021 2021 2021 2021 2021 2020 2020 2020 2020 ...
+##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<p>Reorder the columns in the table and set keys for the data.</p>
+<pre class="r"><code>setcolorder(DT, c(&#39;state_abb&#39;, &#39;state&#39;, &#39;year&#39;, &#39;date&#39;, &#39;barrel&#39;))
+setkey(DT, state_abb, date)</code></pre>
+<p>View the top 6 rows of the data.</p>
+<pre class="r"><code>head(DT)</code></pre>
+<pre><code>##    state_abb  state year       date barrel
+## 1:        AK ALASKA 1981 1981-01-01  49789
+## 2:        AK ALASKA 1981 1981-02-01  45346
+## 3:        AK ALASKA 1981 1981-03-01  50150
+## 4:        AK ALASKA 1981 1981-04-01  48235
+## 5:        AK ALASKA 1981 1981-05-01  48977
+## 6:        AK ALASKA 1981 1981-06-01  48967</code></pre>
+<p>View the bottom 6 rows of the data.</p>
+<pre class="r"><code>tail(DT)</code></pre>
+<pre><code>##    state_abb   state year       date barrel
+## 1:        WY WYOMING 2021 2021-01-01   7310
+## 2:        WY WYOMING 2021 2021-02-01   6147
+## 3:        WY WYOMING 2021 2021-03-01   6959
+## 4:        WY WYOMING 2021 2021-04-01   6978
+## 5:        WY WYOMING 2021 2021-05-01   7078
+## 6:        WY WYOMING 2021 2021-06-01   6841</code></pre>
+<p>View a summary of the statistics of the entire data set.</p>
+<pre class="r"><code>summary(DT)</code></pre>
+<pre><code>##   state_abb            state                year           date           
+##  Length:14580       Length:14580       Min.   :1981   Min.   :1981-01-01  
+##  Class :character   Class :character   1st Qu.:1991   1st Qu.:1991-02-01  
+##  Mode  :character   Mode  :character   Median :2001   Median :2001-03-16  
+##                                        Mean   :2001   Mean   :2001-03-17  
+##                                        3rd Qu.:2011   3rd Qu.:2011-05-01  
+##                                        Max.   :2021   Max.   :2021-06-01  
+##      barrel      
+##  Min.   :     0  
+##  1st Qu.:   146  
+##  Median :   864  
+##  Mean   :  6148  
+##  3rd Qu.:  4524  
+##  Max.   :168487</code></pre>
+<p>Note that the Min. date is 1981-01-01 and the Max. date is 2021-04-01. This means if we ever want to look at annual production, the 2021 numbers will be much lower than all other years. For example.</p>
+<pre class="r"><code>dt &lt;- DT[, .(total_barrels = sum(barrel)), by = .(year)]
+ggplot(dt, aes(x = year, y = total_barrels)) + 
+  geom_line() + 
+  labs(y = &quot;Total Barrels (1000&#39;s)&quot;, x = &quot;Year&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>So if we want to look at annual data, it may be more useful to look at average barrels per day instead of the total production.</p>
+<p>First calculate the number of total days in each month.</p>
+<pre class="r"><code>calc_eomonth_day &lt;- function(date) {
+  first_of_next_month &lt;- lubridate::ceiling_date(date, unit = &quot;month&quot;)
+  lubridate::day(first_of_next_month - 1)
+}
+DT[, num_days_in_month := calc_eomonth_day(date)]
+head(DT)</code></pre>
+<pre><code>##    state_abb  state year       date barrel num_days_in_month
+## 1:        AK ALASKA 1981 1981-01-01  49789                31
+## 2:        AK ALASKA 1981 1981-02-01  45346                28
+## 3:        AK ALASKA 1981 1981-03-01  50150                31
+## 4:        AK ALASKA 1981 1981-04-01  48235                30
+## 5:        AK ALASKA 1981 1981-05-01  48977                31
+## 6:        AK ALASKA 1981 1981-06-01  48967                30</code></pre>
+<p>Then divide the barrel production by the total number of days in each month.</p>
+<pre class="r"><code>DT[, barrels_per_day := barrel / num_days_in_month]
+ # drop the num_days_in_month columns
+DT[, num_days_in_month := NULL]</code></pre>
+<p>Take the average in order to get an estimate for the average barrel per day for each month.</p>
+<pre class="r"><code>dt &lt;- DT[, .(avg_barrel_per_day = mean(barrels_per_day)), by = .(year)]
+ggplot(dt, aes(x = year, y = avg_barrel_per_day)) + geom_line() + labs(y = &quot;Monthly Avg Barrel per Day (1000&#39;s)&quot;, x = &quot;Year&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+</div>
+<div id="save-the-results" class="section level3">
+<h3>4 - Save the results</h3>
+<div class="figure">
+<img src="Img/how-it-works3.svg" fig.align="center" alt="" />
+<p class="caption">Drawn with <a href="https://app.diagrams.net/" class="uri">https://app.diagrams.net/</a></p>
+</div>
+<pre class="r"><code>csv_fname &lt;- here(&quot;Data&quot;, &quot;eia_oil_production.csv&quot;)
+fwrite(DT, csv_fname)</code></pre>
+<p>And that’s it! I hope this was helpful. Please feel free to contact me with any questions or concerns.</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 ---
-title: "Welcome to my site!"
+title: "Teacher / Hacker / Coder"
 author: "Andrew Leonard"
-date: "8/28/2021"
+date: "2021-09-28"
 output: html_document
 ---
 
@@ -9,7 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Please check out the other pages using the navbar at the top.  
+### You can navigate this site using the navbar at the top.
 
-### You may also <u>[download](Img/Resume - Andrew Leonard.pdf)</u> a copy of my resume:
-![Andrew Leonard Resume](Img/Resume - Andrew Leonard.png)
+Feel free to <u>[download](Img/Andrew Leonard - Resume.pdf)</u> a copy of my resume:
+
+![Andrew Leonard Resume](Img/Andrew Leonard - Resume.png)

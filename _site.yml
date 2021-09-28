@@ -7,11 +7,11 @@ navbar:
       href: index.html
     - text: "Examples"
       menu: 
-      - text: "Oil Data"
-        href: oil.html
-      - text: "Conservation Data"
+      - text: "Preprocess Oil Production Data with R and API's"
+        href: examples/oil/index.html
+      - text: "Preprocess CRP Enrollment Data with R and URL's"
         href: crp.html
-      - text: "Comparative Analysis"
+      - text: "Compare Oil and CRP Data with R, Tableau, and Linear Regression"
         href: analysis.html
   right: 
     - href: "https://www.linkedin.com/in/andrew-leonard-83229389/"
