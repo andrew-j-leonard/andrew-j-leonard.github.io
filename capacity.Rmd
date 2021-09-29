@@ -1,0 +1,18 @@
+---
+title: "Capacity Constraint with Time Window & Resource Constraint"
+author: "Andrew Leonard"
+date: "2021-09-28"
+output: html_document
+---
+
+This example uses [Google OR Tools](https://developers.google.com/optimization) to solve an optimization problem common in supply chain.
+
+More specifically, this document is a demonstration of how to use Google OR Tools to solve a [Capacitated Vehicle Routing Problem With Time Window and Resource Constraints](https://en.wikipedia.org/wiki/Vehicle_routing_problem) in Python.
+
+This example closely follows the [Python examples in the documentation for OR tools](https://developers.google.com/optimization/examples) using the [Routing Solver](https://developers.google.com/optimization/reference/python/constraint_solver/pywrapcp?hl=en).
+
+If the plug in is broken, you can download the pdf version of this example <u>[here](Img/Capacitated Vehicle Routing Problem With Time Window and Resource Constraints.pdf)</u>. 
+
+```{r out.width="100%", out.height="500"}
+knitr::include_graphics('Img/Capacitated Vehicle Routing Problem With Time Window and Resource Constraints.pdf')
+```
