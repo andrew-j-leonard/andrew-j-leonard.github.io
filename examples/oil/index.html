@@ -428,8 +428,8 @@ suppressMessages(library(&quot;here&quot;))</code></pre>
 </div>
 <div id="execute" class="section level2">
 <h2>Execute</h2>
-<div id="functions-to-send-get-request-to-eia-api" class="section level3">
-<h3>1 - Functions to send GET request to EIA API</h3>
+<div id="send-get-request-to-api" class="section level3">
+<h3>1 - Send GET request to API</h3>
 <div class="figure">
 <img src="Img/how-it-works1.svg" fig.align="center" fig.width="50%" fig.height="50%" alt="" />
 <p class="caption">Drawn with <a href="https://app.diagrams.net/" class="uri">https://app.diagrams.net/</a></p>
@@ -456,8 +456,8 @@ format_eia_url &lt;- function(state_abb) {
   glue(api_url, api_key = api_key, state_abb = state_abb)
 }</code></pre>
 </div>
-<div id="functions-to-handle-the-apis-response" class="section level3">
-<h3>2 - Functions to handle the API’s response</h3>
+<div id="handle-the-response" class="section level3">
+<h3>2 - Handle the response</h3>
 <div class="figure">
 <img src="Img/how-it-works2.svg" fig.align="center" alt="" />
 <p class="caption">Drawn with <a href="https://app.diagrams.net/" class="uri">https://app.diagrams.net/</a></p>
@@ -518,8 +518,8 @@ print(json)</code></pre>
 <pre class="r"><code>#clean up
 rm(state_abb, res, json)</code></pre>
 </div>
-<div id="functions-to-run-it" class="section level3">
-<h3>3 - Functions to run it</h3>
+<div id="run-it" class="section level3">
+<h3>3 - Run it</h3>
 <p>Create a function to bring bring it all together.</p>
 <pre class="r"><code>run &lt;- function(state_abb) {
   res &lt;- get_eia_response(state_abb)
@@ -536,8 +536,8 @@ print(length(results))</code></pre>
 <p>Looks like we have all 50 responses. Now let’s combine them into one single table.</p>
 <pre class="r"><code>DT &lt;- rbindlist(results, use.names = TRUE, idcol = &quot;state_abb&quot;)</code></pre>
 </div>
-<div id="functions-to-clean-data" class="section level3">
-<h3>4 - Functions to clean data</h3>
+<div id="clean-the-data" class="section level3">
+<h3>4 - Clean the data</h3>
 <p>Check the data type of each column in the result set.</p>
 <pre class="r"><code>str(DT)</code></pre>
 <pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14600 obs. of  3 variables:
