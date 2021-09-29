@@ -13,7 +13,7 @@ navbar:
         href: crp.html
       - text: "Compare Oil and CRP Data with R, Tableau, and Linear Regression"
         href: analysis.html
-      - text: "Capacitated Vehicle Routing Problem with Time Window and Resource Constraints"
+      - text: "Solve Capacitated Vehicle Routing Problems with Python"
         href: capacity.html
   right: 
     - href: "https://www.linkedin.com/in/andrew-leonard-83229389/"
