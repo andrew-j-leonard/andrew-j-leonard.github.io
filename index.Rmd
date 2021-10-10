@@ -11,6 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### You can navigate this site using the navbar at the top.
 
-Feel free to <u>[download](Img/Andrew Leonard - Resume.pdf)</u> a copy of my resume:
+Feel free to download a copy of my resume <u>[here](Img/Andrew Leonard - Resume.pdf)</u>:
 
 ![Andrew Leonard Resume](Img/Andrew Leonard - Resume.png)
