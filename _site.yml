@@ -7,10 +7,10 @@ navbar:
       href: index.html
     - text: "Examples"
       menu: 
-      - text: "Wrangle Oil Production Data with R and API's"
+      - text: "Wrangle Oil Production Data with R and APIs"
         href: examples/oil/index.html
-      - text: "Wrangle CRP Enrollment Data with R and URL's"
-        href: crp.html
+      - text: "Wrangle CRP Enrollment Data with R and Excel"
+        href: examples/crp/index.html
       - text: "Compare Oil and CRP Data with R, Tableau, and Linear Regression"
         href: analysis.html
       - text: "Solve Capacitated Vehicle Routing Problems with Python"

@@ -254,10 +254,10 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="examples/oil/index.html">Wrangle Oil Production Data with R and API's</a>
+      <a href="examples/oil/index.html">Wrangle Oil Production Data with R and APIs</a>
     </li>
     <li>
-      <a href="crp.html">Wrangle CRP Enrollment Data with R and URL's</a>
+      <a href="examples/crp/index.html">Wrangle CRP Enrollment Data with R and Excel</a>
     </li>
     <li>
       <a href="analysis.html">Compare Oil and CRP Data with R, Tableau, and Linear Regression</a>
@@ -420,10 +420,10 @@ print(length(results))</code></pre>
 <pre class="r"><code>DT &lt;- rbindlist(results, use.names = TRUE, idcol = &quot;state_abb&quot;)</code></pre>
 <p>Check the data type of each column in the result set.</p>
 <pre class="r"><code>str(DT)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14600 obs. of  3 variables:
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14630 obs. of  3 variables:
 ##  $ state_abb: chr  &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; ...
-##  $ date     : chr  &quot;202106&quot; &quot;202105&quot; &quot;202104&quot; &quot;202103&quot; ...
-##  $ barrel   : chr  &quot;345&quot; &quot;335&quot; &quot;331&quot; &quot;379&quot; ...
+##  $ date     : chr  &quot;202107&quot; &quot;202106&quot; &quot;202105&quot; &quot;202104&quot; ...
+##  $ barrel   : chr  &quot;412&quot; &quot;333&quot; &quot;366&quot; &quot;331&quot; ...
 ##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
 <p>Now let’s find any NA values in the date column and filter them out - these are from the states without data.</p>
 <pre class="r"><code>print(any(is.na(DT$date)))</code></pre>
@@ -442,12 +442,12 @@ DT[, date := as.Date(date, &quot;%Y%m%d&quot;)]
 DT[, year := year(date)]</code></pre>
 <p>Check the data types once again to make sure everything is squared away.</p>
 <pre class="r"><code>str(DT)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14580 obs. of  5 variables:
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   14610 obs. of  5 variables:
 ##  $ state_abb: chr  &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; ...
-##  $ date     : Date, format: &quot;2021-06-01&quot; &quot;2021-05-01&quot; ...
-##  $ barrel   : num  345 335 331 379 339 383 380 355 378 333 ...
+##  $ date     : Date, format: &quot;2021-07-01&quot; &quot;2021-06-01&quot; ...
+##  $ barrel   : num  412 333 366 331 379 339 383 380 355 378 ...
 ##  $ state    : chr  &quot;ALABAMA&quot; &quot;ALABAMA&quot; &quot;ALABAMA&quot; &quot;ALABAMA&quot; ...
-##  $ year     : int  2021 2021 2021 2021 2021 2021 2020 2020 2020 2020 ...
+##  $ year     : int  2021 2021 2021 2021 2021 2021 2021 2020 2020 2020 ...
 ##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
 <p>Reorder the columns in the table and set keys for the data.</p>
 <pre class="r"><code>setcolorder(DT, c(&#39;state_abb&#39;, &#39;state&#39;, &#39;year&#39;, &#39;date&#39;, &#39;barrel&#39;))
@@ -464,26 +464,26 @@ setkey(DT, state_abb, date)</code></pre>
 <p>View the bottom 6 rows of the data.</p>
 <pre class="r"><code>tail(DT)</code></pre>
 <pre><code>##    state_abb   state year       date barrel
-## 1:        WY WYOMING 2021 2021-01-01   7310
-## 2:        WY WYOMING 2021 2021-02-01   6147
-## 3:        WY WYOMING 2021 2021-03-01   6959
-## 4:        WY WYOMING 2021 2021-04-01   6978
-## 5:        WY WYOMING 2021 2021-05-01   7078
-## 6:        WY WYOMING 2021 2021-06-01   6841</code></pre>
+## 1:        WY WYOMING 2021 2021-02-01   6147
+## 2:        WY WYOMING 2021 2021-03-01   6959
+## 3:        WY WYOMING 2021 2021-04-01   6978
+## 4:        WY WYOMING 2021 2021-05-01   7085
+## 5:        WY WYOMING 2021 2021-06-01   6885
+## 6:        WY WYOMING 2021 2021-07-01   7187</code></pre>
 <p>View a summary of the statistics of the entire data set.</p>
 <pre class="r"><code>summary(DT)</code></pre>
 <pre><code>##   state_abb            state                year           date           
-##  Length:14580       Length:14580       Min.   :1981   Min.   :1981-01-01  
+##  Length:14610       Length:14610       Min.   :1981   Min.   :1981-01-01  
 ##  Class :character   Class :character   1st Qu.:1991   1st Qu.:1991-02-01  
-##  Mode  :character   Mode  :character   Median :2001   Median :2001-03-16  
-##                                        Mean   :2001   Mean   :2001-03-17  
-##                                        3rd Qu.:2011   3rd Qu.:2011-05-01  
-##                                        Max.   :2021   Max.   :2021-06-01  
+##  Mode  :character   Mode  :character   Median :2001   Median :2001-04-01  
+##                                        Mean   :2001   Mean   :2001-04-01  
+##                                        3rd Qu.:2011   3rd Qu.:2011-06-01  
+##                                        Max.   :2021   Max.   :2021-07-01  
 ##      barrel      
 ##  Min.   :     0  
 ##  1st Qu.:   146  
 ##  Median :   864  
-##  Mean   :  6148  
+##  Mean   :  6156  
 ##  3rd Qu.:  4524  
 ##  Max.   :168487</code></pre>
 <p>Note that the Min. date is 1981-01-01 and the Max. date is 2021-04-01. This means if we ever want to look at annual production, the 2021 numbers will be much lower than all other years. For example.</p>
