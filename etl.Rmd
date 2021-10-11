@@ -14,10 +14,10 @@ knitr::opts_chunk$set(echo = TRUE)
 This R Markdown document provides a template for various ETL pipeline designs.
 
 
-### Very common design - open to redundancies
+### Common design - open to redundancies
 
 ![Drawn with https://app.diagrams.net/](Img/Self-Service ETL Diagram-Without API.drawio.svg)
 
-### Less common - much more scaleable but much more work
+### Common design - more scaleable
 
 ![Drawn with https://app.diagrams.net/](Img/Self-Service ETL Diagram-With API.drawio.svg)
