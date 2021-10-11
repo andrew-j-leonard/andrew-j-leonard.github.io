@@ -1,0 +1,23 @@
+---
+title: "Template for Data Prep Operations"
+author: "Andrew Leonard"
+date: "10/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview 
+
+This R Markdown document provides a template for basic data prep operations.
+
+
+### Barebones Design - Simple
+
+![Drawn with https://app.diagrams.net/](Img/Data-Prep-Operations-Template-Simple Diagram.drawio.svg)
+
+### Barebones Design - Verbose
+
+![Drawn with https://app.diagrams.net/](Img/Data-Prep-Operations-Template-Verbose Diagram.drawio.svg)

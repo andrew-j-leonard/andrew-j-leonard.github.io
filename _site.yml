@@ -15,6 +15,12 @@ navbar:
         href: analysis.html
       - text: "Solve Capacitated Vehicle Routing Problems with Python"
         href: capacity.html
+    - text: "Design"
+      menu: 
+      - text: "ETL Diagrams"
+        href: etl.html
+      - text: "Data Prep Diagrams"
+        href: prep.html
   right: 
     - href: "https://www.linkedin.com/in/andrew-leonard-83229389/"
       icon: fa-linkedin
